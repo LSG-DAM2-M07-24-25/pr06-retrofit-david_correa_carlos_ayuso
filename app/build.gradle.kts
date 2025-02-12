@@ -55,7 +55,8 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation (libs.retrofit.v2110)
-    implementation(libs.retrofit.gson)
+    implementation (libs.gson)
+    implementation (libs.converter.gson.v210)
     implementation(libs.coroutines.android)
 
 
