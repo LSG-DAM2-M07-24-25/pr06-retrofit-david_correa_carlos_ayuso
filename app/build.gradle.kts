@@ -1,8 +1,12 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
+
+
 
 android {
     namespace = "com.example.retrofitdavidcarlos"
@@ -57,3 +61,23 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+/*
+ *  Deberías tener las claves de TWITCH_CLIENT_ID y TWITCH_CLIENT_SECRET en tu archivo  de local.properties
+ *  Entonces podrás usar esas claves asignando estas variables
+ *  Ejemplo:
+ *  val clientId = twitchClientId
+ *  val clientSecret = twitchClientSecret
+ */
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+/**
+ * ID del cliente registrado en locals.properties
+ */
+val twitchClientId: String = localProperties.getProperty("TWITCH_CLIENT_ID") ?: ""
+/**
+ * Secreto del cliente registrado en locals.properties
+ */
+val twitchClientSecret: String = localProperties.getProperty("TWITCH_CLIENT_SECRET") ?: ""
+
