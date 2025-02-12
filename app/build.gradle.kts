@@ -53,6 +53,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation (libs.retrofit.v2110)
+    implementation(libs.retrofit.gson)
+    implementation(libs.coroutines.android)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,23 +67,3 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
-
-/*
- *  Deberías tener las claves de TWITCH_CLIENT_ID y TWITCH_CLIENT_SECRET en tu archivo  de local.properties
- *  Entonces podrás usar esas claves asignando estas variables
- *  Ejemplo:
- *  val clientId = twitchClientId
- *  val clientSecret = twitchClientSecret
- */
-val localProperties = Properties().apply {
-    load(rootProject.file("local.properties").inputStream())
-}
-/**
- * ID del cliente registrado en locals.properties
- */
-val twitchClientId: String = localProperties.getProperty("TWITCH_CLIENT_ID") ?: ""
-/**
- * Secreto del cliente registrado en locals.properties
- */
-val twitchClientSecret: String = localProperties.getProperty("TWITCH_CLIENT_SECRET") ?: ""
-
