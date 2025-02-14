@@ -16,5 +16,9 @@ fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewMod
         composable(Routes.Juegos.route){
             Juegos(navigationController, apiViewModel)
         }
+
+        composable(Routes.Listas.route){
+            Listas(navigationController, apiViewModel)
+        }
     }
 }
