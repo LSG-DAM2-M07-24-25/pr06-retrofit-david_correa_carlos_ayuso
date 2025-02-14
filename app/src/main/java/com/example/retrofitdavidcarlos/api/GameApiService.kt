@@ -4,12 +4,12 @@ import com.example.retrofitdavidcarlos.model.GameResponse
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Query
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface GameApiService {
-
     @GET("games")
     suspend fun getAllGames(
         @Query("key") apiKey: String = "244ec649ea554979b3cfb39c90ee1100"
