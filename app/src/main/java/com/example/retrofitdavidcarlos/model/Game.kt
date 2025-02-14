@@ -1,11 +1,15 @@
 package com.example.retrofitdavidcarlos.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "games")
 data class Game(
     val added: Int,
     val background_image: String,
     val clip: Any,
     val dominant_color: String,
-    val id: Int,
+    @PrimaryKey val id: Int,
     val metacritic: Int,
     val name: String,
     val playtime: Int,
@@ -20,5 +24,7 @@ data class Game(
     val suggestions_count: Int,
     val tba: Boolean,
     val updated: String,
-    val user_game: Any
+    val user_game: Any,
+    var is_favorite: Boolean,
+    var state: Estado
 )
