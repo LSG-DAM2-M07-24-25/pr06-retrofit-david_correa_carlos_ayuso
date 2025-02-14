@@ -8,12 +8,8 @@ import androidx.compose.material3.Surface
 import com.example.retrofitdavidcarlos.ui.theme.RetrofitDavidCarlosTheme
 import com.example.retrofitdavidcarlos.view.EntryPoint
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
-import com.example.retrofitdavidcarlos.view.EntryPoint
-import com.example.retrofitdavidcarlos.viewmodel.*
 
 class MainActivity : ComponentActivity() {
 
@@ -27,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ){
                     val navigationController = rememberNavController()
-                    EntryPoint(navigationController)
+                    EntryPoint(navigationController, apiViewModel)
                 }
             }
         }
