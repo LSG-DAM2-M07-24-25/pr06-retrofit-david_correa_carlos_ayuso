@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ApiViewModel : ViewModel() {
-
     private val repository = Repository()
     private val _loading = MutableLiveData(true)
     val loading = _loading
