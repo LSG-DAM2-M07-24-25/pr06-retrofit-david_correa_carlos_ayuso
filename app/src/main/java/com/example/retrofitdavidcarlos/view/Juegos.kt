@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
@@ -60,7 +61,7 @@ fun Juegos(navController: NavHostController, apiViewModel: ApiViewModel) {
                 contentPadding = innerPadding
             ) {
                 items(games.results) { game ->
-                    GameItem(navController, game)
+                    GameItem(navController, game, apiViewModel)
                 }
             }
         }
@@ -95,7 +96,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GameItem(navController: NavHostController, games: Game){
+fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel){
 
     Card(
         border = BorderStroke(2.dp, Color.LightGray),
@@ -107,7 +108,7 @@ fun GameItem(navController: NavHostController, games: Game){
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            val imageUrl = games.background_image
+            val imageUrl = game.background_image
 
             GlideImage(
                 model = imageUrl,
@@ -117,13 +118,23 @@ fun GameItem(navController: NavHostController, games: Game){
             )
 
             Text(
-                text = games.name,
+                text = game.name,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp)
             )
+
+            IconButton(onClick = {
+                apiViewModel.esFavorito(game.id)
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "favorito",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         }
     }
 }
