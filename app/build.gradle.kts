@@ -58,6 +58,7 @@ dependencies {
     implementation (libs.gson)
     implementation (libs.converter.gson.v210)
     implementation(libs.coroutines.android)
+    implementation(libs.androidx.navigation.compose)
 
 
     testImplementation(libs.junit)
