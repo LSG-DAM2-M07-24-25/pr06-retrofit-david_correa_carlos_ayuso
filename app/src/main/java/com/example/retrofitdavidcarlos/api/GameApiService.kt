@@ -8,6 +8,7 @@ import retrofit2.http.Query
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Query
 
 interface GameApiService {
     @GET("games")
