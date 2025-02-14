@@ -15,6 +15,15 @@ interface GameDao {
     @Query("SELECT * FROM games WHERE name = :name")
     fun findByName(name: String): MutableList<Game?>
 
+    @Query("SELECT * FROM games WHERE state = 'PENDIENTE'")
+    fun getPendientes(): MutableList<Game>
+
+    @Query("SELECT * FROM games WHERE state = 'JUGANDO'")
+    fun getJugando(): MutableList<Game>
+
+    @Query("SELECT * FROM games WHERE state = 'JUGADO'")
+    fun getJugados(): MutableList<Game>
+
     @Insert
     fun addFavorite(favoriteGames: Game)
 
