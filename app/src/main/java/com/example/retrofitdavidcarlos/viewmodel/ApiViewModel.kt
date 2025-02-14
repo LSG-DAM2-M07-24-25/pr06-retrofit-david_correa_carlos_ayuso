@@ -1,7 +1,5 @@
 package com.example.retrofitdavidcarlos.viewmodel
 
-import android.provider.ContactsContract
-import android.provider.ContactsContract.Contacts.Data
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,13 +20,21 @@ class ApiViewModel : ViewModel() {
 
     fun getGames() {
         CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getAllGames()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    _games.value = response.body()
-                    _loading.value = false
-                } else {
-                    Log.e("Error :", response.message())
+            try {
+                val response = repository.getAllGames()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body() != null) {
+                        _games.value = response.body()
+                        _loading.value = false
+                    } else {
+                        Log.e("Error", "Response not successful: ${response.message()}")
+                        _loading.value = false  // Still need to hide loading on error
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Error", "Exception: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    _loading.value = false  // Hide loading on error
                 }
             }
         }
