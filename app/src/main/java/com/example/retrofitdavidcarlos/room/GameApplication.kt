@@ -12,16 +12,21 @@ import androidx.room.Room
  *
  * S'executarà només començar l'aplicació ja que està dins de AndroidManifest.xml i crearà la BD
  */
-class GameApplication: Application() {
+class GameApplication : Application() {
 
     // Creem un atribut estàtic de la classe
     companion object {
         lateinit var database: GameDatabase
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
         // Aquí determinem el nom de la base de dades. En el nostre cas "PokemonDatabase"
-        database = Room.databaseBuilder(this, GameDatabase::class.java,"GameDatabase").build()
+        database = Room.databaseBuilder(
+            applicationContext,
+            GameDatabase::class.java,
+            "game_database"
+        ).fallbackToDestructiveMigration().build()
     }
 }
