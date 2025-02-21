@@ -1,4 +1,4 @@
-package com.example.retrofitdavidcarlos.view
+package com.example.retrofitdavidcarlos.view.medium
 
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
@@ -16,12 +16,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
-fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
+fun ListasMedium(navController: NavHostController, apiViewModel: ApiViewModel){
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         Column (
             modifier = Modifier
@@ -106,5 +104,5 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ListasPreview(){
-    Listas(navController = rememberNavController(), apiViewModel = ApiViewModel())
+    ListasMedium(navController = rememberNavController(), apiViewModel = ApiViewModel())
 }

@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.retrofitdavidcarlos.nav.Routes
 import androidx.navigation.compose.composable
+import com.example.retrofitdavidcarlos.view.compact.*
+import com.example.retrofitdavidcarlos.view.medium.*
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
@@ -61,26 +63,26 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
 fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel){
     NavHost(
         navController = navigationController,
-        startDestination = Routes.HomeCompact.route
+        startDestination = Routes.HomeMedium.route
     ){
-        composable(Routes.HomeCompact.route){
-            HomeCompact(navigationController, apiViewModel)
+        composable(Routes.HomeMedium.route){
+            HomeMedium(navigationController, apiViewModel)
         }
 
-        composable(Routes.ListasCompact.route){
-            ListasCompact(navigationController, apiViewModel)
+        composable(Routes.ListasMedium.route){
+            ListasMedium(navigationController, apiViewModel)
         }
 
-        composable(Routes.JugandoCompact.route){
-            JugandoCompact(navigationController, apiViewModel)
+        composable(Routes.JugandoMedium.route){
+            JugandoMedium(navigationController, apiViewModel)
         }
 
-        composable(Routes.JugadoCompact.route){
-            JugadoCompact(navigationController, apiViewModel)
+        composable(Routes.JugadoMedium.route){
+            JugadoMedium(navigationController, apiViewModel)
         }
 
-        composable(Routes.PendienteCompact.route){
-            PendienteCompact(navigationController, apiViewModel)
+        composable(Routes.PendienteMedium.route){
+            PendienteMedium(navigationController, apiViewModel)
         }
     }
 }
