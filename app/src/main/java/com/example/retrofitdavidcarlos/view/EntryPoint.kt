@@ -42,6 +42,10 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
             HomeCompact(navigationController, apiViewModel)
         }
 
+        composable(Routes.InfoCompact.route){
+            InfoCompact(navigationController, apiViewModel)
+        }
+
         composable(Routes.ListasCompact.route){
             ListasCompact(navigationController, apiViewModel)
         }
@@ -70,6 +74,10 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
             HomeMedium(navigationController, apiViewModel)
         }
 
+        composable(Routes.InfoMedium.route){
+            InfoMedium(navigationController, apiViewModel)
+        }
+
         composable(Routes.ListasMedium.route){
             ListasMedium(navigationController, apiViewModel)
         }
@@ -96,6 +104,10 @@ fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel:
     ){
         composable(Routes.HomeExpanded.route){
             HomeExpanded(navigationController, apiViewModel)
+        }
+
+        composable(Routes.InfoExpanded.route){
+            InfoExpanded(navigationController, apiViewModel)
         }
 
         composable(Routes.ListasExpanded.route){
