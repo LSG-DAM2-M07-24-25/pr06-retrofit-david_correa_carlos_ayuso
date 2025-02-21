@@ -29,7 +29,6 @@ fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewMod
             AppNavigationCompact(navigationController, apiViewModel)
         }
     }
-
 }
 
 @Composable
