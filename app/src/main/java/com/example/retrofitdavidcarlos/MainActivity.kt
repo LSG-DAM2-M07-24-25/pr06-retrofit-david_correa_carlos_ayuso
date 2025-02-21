@@ -7,14 +7,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.example.retrofitdavidcarlos.ui.theme.RetrofitDavidCarlosTheme
 import com.example.retrofitdavidcarlos.view.EntryPoint
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
-
     private val apiViewModel: ApiViewModel by viewModels()
-
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -23,7 +24,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ){
                     val navigationController = rememberNavController()
-                    EntryPoint(navigationController, apiViewModel)
+                    val windowSize = calculateWindowSizeClass(this)
+                    EntryPoint(navigationController, apiViewModel, windowSize)
                 }
             }
         }

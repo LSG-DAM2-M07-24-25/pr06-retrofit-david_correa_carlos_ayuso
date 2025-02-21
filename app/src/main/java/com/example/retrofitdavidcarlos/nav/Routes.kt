@@ -1,9 +1,21 @@
 package com.example.retrofitdavidcarlos.nav
 
 sealed class Routes (val route: String){
-    object Juegos : Routes("juegos")
-    object Listas : Routes("listas")
-    object ListasJugado : Routes("jugado")
-    object ListasJugando : Routes("jugando")
-    object ListasPendiente : Routes("pendiente")
+    object HomeCompact : Routes("home_compact")
+    object ListasCompact : Routes("listas_compact")
+    object JugadoCompact : Routes("jugado_compact")
+    object JugandoCompact : Routes("jugando_compact")
+    object PendienteCompact : Routes("pendiente_compact")
+
+    object HomeMedium : Routes("home_medium")
+    object ListasMedium : Routes("listas_medium")
+    object JugadoMedium : Routes("jugado_medium")
+    object JugandoMedium : Routes("jugando_medium")
+    object PendienteMedium : Routes("pendiente_medium")
+
+    object HomeExpanded : Routes("home_expanded")
+    object ListasExpanded : Routes("listas_expanded")
+    object JugadoExpanded : Routes("jugado_expanded")
+    object JugandoExpanded : Routes("jugando_expanded")
+    object PendienteExpanded : Routes("pendiente_expanded")
 }

@@ -8,11 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +31,7 @@ import com.example.retrofitdavidcarlos.nav.Routes
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
-fun Juegos(navController: NavHostController, apiViewModel: ApiViewModel) {
+fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
     val showLoading: Boolean by apiViewModel.loading.observeAsState(true)
     val games: GameResponse by apiViewModel.games.observeAsState(GameResponse(emptyList()))
 

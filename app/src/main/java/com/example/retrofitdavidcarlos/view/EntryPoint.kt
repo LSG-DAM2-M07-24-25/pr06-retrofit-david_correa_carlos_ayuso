@@ -1,5 +1,7 @@
 package com.example.retrofitdavidcarlos.view
 
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,29 +10,82 @@ import androidx.navigation.compose.composable
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
-fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewModel){
-    NavHost(
-        navController = navigationController,
-        startDestination = Routes.Juegos.route
-    ){
-        composable(Routes.Juegos.route){
-            Juegos(navigationController, apiViewModel)
-        }
+fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewModel, windowSize: WindowSizeClass){
 
-        composable(Routes.Listas.route){
-            Listas(navigationController, apiViewModel)
+    when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> {
+            AppNavigationCompact(navigationController, apiViewModel)
         }
-
-        composable(Routes.ListasJugado.route){
-            ListasJugado(navigationController, apiViewModel)
+        WindowWidthSizeClass.Medium -> {
+            AppNavigationMedium(navigationController, apiViewModel)
         }
-
-        composable(Routes.Listas.route){
-            ListasJugando(navigationController, apiViewModel)
+        WindowWidthSizeClass.Expanded -> {
+            AppNavigationExpanded(navigationController, apiViewModel)
         }
-
-        composable(Routes.Listas.route){
-            ListasPendiente(navigationController, apiViewModel)
+        else -> {
+            AppNavigationCompact(navigationController, apiViewModel)
         }
     }
+
+}
+
+@Composable
+fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: ApiViewModel){
+    NavHost(
+        navController = navigationController,
+        startDestination = Routes.HomeCompact.route
+    ){
+        composable(Routes.HomeCompact.route){
+            HomeCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.ListasCompact.route){
+            ListasCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugandoCompact.route){
+            JugandoCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugadoCompact.route){
+            JugadoCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.PendienteCompact.route){
+            PendienteCompact(navigationController, apiViewModel)
+        }
+    }
+}
+
+@Composable
+fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel){
+    NavHost(
+        navController = navigationController,
+        startDestination = Routes.HomeCompact.route
+    ){
+        composable(Routes.HomeCompact.route){
+            HomeCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.ListasCompact.route){
+            ListasCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugandoCompact.route){
+            JugandoCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugadoCompact.route){
+            JugadoCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.PendienteCompact.route){
+            PendienteCompact(navigationController, apiViewModel)
+        }
+    }
+}
+
+@Composable
+fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel){
+
 }

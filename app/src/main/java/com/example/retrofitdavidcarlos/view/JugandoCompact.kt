@@ -5,6 +5,6 @@ import androidx.navigation.NavHostController
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
-fun ListasJugado(navController: NavHostController, apiViewModel: ApiViewModel) {
+fun JugandoCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
 
 }
