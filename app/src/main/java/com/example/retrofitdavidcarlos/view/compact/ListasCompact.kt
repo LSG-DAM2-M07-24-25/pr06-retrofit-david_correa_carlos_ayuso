@@ -1,5 +1,6 @@
 package com.example.retrofitdavidcarlos.view.compact
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -13,12 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
@@ -40,10 +43,16 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
         topBar = { Topbar(tabSeleccionado){ tabSeleccionado = it} },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
-        ContenidoPrincipal(
-            games = games,
-            paddingValues = padding
-        )
+        if (tabSeleccionado == 0){
+            Favoritos(
+                games = games,
+                paddingValues = padding
+            )
+        } else {
+            Listas(
+                paddingValues = padding
+            )
+        }
     }
 }
 
@@ -82,7 +91,7 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun ContenidoPrincipal(games: GameResponse, paddingValues: PaddingValues){
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,7 +121,7 @@ fun TarjetaGame(game: Game){
             model = game.background_image,
             contentDescription = game.name,
             modifier = Modifier
-                .width(100.dp)
+                .width(120.dp)
                 .height(150.dp)
         )
 
@@ -147,6 +156,105 @@ fun TarjetaGame(game: Game){
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
+        }
+    }
+}
+
+@Composable
+fun Listas(paddingValues: PaddingValues){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        Card(
+            border = BorderStroke(2.dp, Color.LightGray),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(100.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "Jugando",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 16.dp)
+                )
+
+                IconButton(
+                    onClick = { /* Mostrar opciones */ },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                }
+            }
+        }
+
+        Card(
+            border = BorderStroke(2.dp, Color.LightGray),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(100.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "Jugados",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 16.dp)
+                )
+
+                IconButton(
+                    onClick = { /* Mostrar opciones */ },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                }
+            }
+        }
+
+        Card(
+            border = BorderStroke(2.dp, Color.LightGray),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(100.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "Pendientes",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 16.dp)
+                )
+
+                IconButton(
+                    onClick = { /* Mostrar opciones */ },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                }
+            }
         }
     }
 }
