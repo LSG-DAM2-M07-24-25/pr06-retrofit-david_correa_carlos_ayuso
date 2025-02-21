@@ -1,4 +1,4 @@
-package com.example.retrofitdavidcarlos.view
+package com.example.retrofitdavidcarlos.view.compact
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Composable
@@ -55,6 +55,7 @@ fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
                 )
             }
         } else {
+            Text(text = "compact")
             LazyColumn(
                 contentPadding = innerPadding
             ) {
@@ -75,18 +76,18 @@ fun BottomNavigationBar(navController: NavHostController) {
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
-            selected = currentDestination?.hierarchy?.any { it.route == Routes.Juegos.route } == true,
+            selected = currentDestination?.hierarchy?.any { it.route == Routes.HomeCompact.route } == true,
             onClick = {
-                navController.navigate(Routes.Juegos.route)
+                navController.navigate(Routes.HomeCompact.route)
             }
         )
 
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.List, contentDescription = "Lists") },
             label = { Text("Listas") },
-            selected = currentDestination?.hierarchy?.any { it.route == Routes.Listas.route } == true,
+            selected = currentDestination?.hierarchy?.any { it.route == Routes.ListasCompact.route } == true,
             onClick = {
-                navController.navigate(Routes.Listas.route)
+                navController.navigate(Routes.ListasCompact.route)
             }
         )
     }

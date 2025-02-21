@@ -1,10 +1,10 @@
-package com.example.retrofitdavidcarlos.view
+package com.example.retrofitdavidcarlos.view.medium
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
-fun PendienteCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
+fun JugandoMedium(navController: NavHostController, apiViewModel: ApiViewModel) {
 
 }
