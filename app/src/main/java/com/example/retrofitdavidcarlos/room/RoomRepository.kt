@@ -2,7 +2,7 @@ package com.example.retrofitdavidcarlos.room
 
 import com.example.retrofitdavidcarlos.model.Game
 
-class Repository {
+class RoomRepository {
     val daoInterface = GameApplication.database.GameDao()
 
     suspend fun getFavorites(): MutableList<Game> = daoInterface.getFavorites()
@@ -10,4 +10,6 @@ class Repository {
     suspend fun getPendientes(): MutableList<Game> = daoInterface.getPendientes()
     suspend fun getJugando(): MutableList<Game> = daoInterface.getJugando()
     suspend fun getJugados(): MutableList<Game> = daoInterface.getJugados()
+    suspend fun addJuego(game: Game) = daoInterface.addJuego(game)
+    suspend fun updateFav(game: Game, favorite: Boolean) = daoInterface.updateFavoriteStatus(game.name, favorite)
 }

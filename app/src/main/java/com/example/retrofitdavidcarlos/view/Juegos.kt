@@ -96,8 +96,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel){
-
+fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel) {
     Card(
         border = BorderStroke(2.dp, Color.LightGray),
         shape = RoundedCornerShape(8.dp),
@@ -106,7 +105,9 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             val imageUrl = game.background_image
 
@@ -116,25 +117,41 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(100.dp)
             )
-
-            Text(
-                text = game.name,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-            )
-
-            IconButton(onClick = {
-                apiViewModel.esFavorito(game.id)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "favorito",
-                    modifier = Modifier.size(40.dp)
+            
+            Column {
+                Text(
+                    text = game.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
                 )
+
+                Row {
+                    IconButton(onClick = {
+                        apiViewModel.guardarJuego(game)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.List,
+                            contentDescription = "Guardar juego",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        apiViewModel.addFavorito(game)
+                    }) {
+                        Icon(
+                            imageVector = if (game.is_favorite) Icons.Filled.Favorite else Icons.Default.Favorite,
+                            contentDescription = "Favorito",
+                            tint = if (game.is_favorite) Color.Red else Color.Gray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
+
         }
     }
 }

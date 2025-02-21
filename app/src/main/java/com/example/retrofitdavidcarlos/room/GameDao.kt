@@ -25,7 +25,7 @@ interface GameDao {
     fun getJugados(): MutableList<Game>
 
     @Insert
-    fun addFavorite(favoriteGames: Game)
+    fun addJuego(juego: Game)
 
     @Delete
     fun removeFavorite(favoriteGames: Game)
