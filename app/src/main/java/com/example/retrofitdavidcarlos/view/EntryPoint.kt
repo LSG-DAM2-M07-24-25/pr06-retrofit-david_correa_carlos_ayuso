@@ -9,6 +9,7 @@ import com.example.retrofitdavidcarlos.nav.Routes
 import androidx.navigation.compose.composable
 import com.example.retrofitdavidcarlos.view.compact.*
 import com.example.retrofitdavidcarlos.view.medium.*
+import com.example.retrofitdavidcarlos.view.expanded.*
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 
 @Composable
@@ -89,5 +90,28 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
 
 @Composable
 fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel){
+    NavHost(
+        navController = navigationController,
+        startDestination = Routes.HomeExpanded.route
+    ){
+        composable(Routes.HomeExpanded.route){
+            HomeExpanded(navigationController, apiViewModel)
+        }
 
+        composable(Routes.ListasExpanded.route){
+            ListasExpanded(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugandoExpanded.route){
+            JugandoExpanded(navigationController, apiViewModel)
+        }
+
+        composable(Routes.JugadoExpanded.route){
+            JugandoExpanded(navigationController, apiViewModel)
+        }
+
+        composable(Routes.PendienteExpanded.route){
+            PendienteExpanded(navigationController, apiViewModel)
+        }
+    }
 }
