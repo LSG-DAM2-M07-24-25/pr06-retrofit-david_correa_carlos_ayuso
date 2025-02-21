@@ -29,7 +29,6 @@ fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewMod
             AppNavigationCompact(navigationController, apiViewModel)
         }
     }
-
 }
 
 @Composable
@@ -40,6 +39,10 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
     ){
         composable(Routes.HomeCompact.route){
             HomeCompact(navigationController, apiViewModel)
+        }
+
+        composable(Routes.InfoCompact.route){
+            InfoCompact(navigationController, apiViewModel)
         }
 
         composable(Routes.ListasCompact.route){
@@ -70,6 +73,10 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
             HomeMedium(navigationController, apiViewModel)
         }
 
+        composable(Routes.InfoMedium.route){
+            InfoMedium(navigationController, apiViewModel)
+        }
+
         composable(Routes.ListasMedium.route){
             ListasMedium(navigationController, apiViewModel)
         }
@@ -96,6 +103,10 @@ fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel:
     ){
         composable(Routes.HomeExpanded.route){
             HomeExpanded(navigationController, apiViewModel)
+        }
+
+        composable(Routes.InfoExpanded.route){
+            InfoExpanded(navigationController, apiViewModel)
         }
 
         composable(Routes.ListasExpanded.route){
