@@ -26,5 +26,5 @@ data class Game(
     val updated: String,
     val user_game: String?,
     var is_favorite: Boolean,
-    var state: Estado
+    var state: Estado = Estado.PENDIENTE
 )

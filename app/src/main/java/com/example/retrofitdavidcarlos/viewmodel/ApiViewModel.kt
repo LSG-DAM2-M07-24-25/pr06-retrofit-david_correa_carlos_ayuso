@@ -21,6 +21,8 @@ class ApiViewModel : ViewModel() {
     val loading = _loading
     private val _games = MutableLiveData<GameResponse>()
     val games = _games
+    private val _favoritos = MutableLiveData<Set<Int>>(setOf())
+    val favoritos = _favoritos
 
     fun getGames() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -35,8 +37,6 @@ class ApiViewModel : ViewModel() {
             }
         }
     }
-<<<<<<< Updated upstream
-=======
 
     fun addFavorito(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -72,5 +72,5 @@ class ApiViewModel : ViewModel() {
             }
         }
     }
->>>>>>> Stashed changes
+
 }
