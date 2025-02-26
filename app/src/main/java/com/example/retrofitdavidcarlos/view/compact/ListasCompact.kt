@@ -1,6 +1,7 @@
 package com.example.retrofitdavidcarlos.view.compact
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -50,7 +51,7 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
             )
         } else {
             Listas(
-                paddingValues = padding
+                paddingValues = padding,
             )
         }
     }
@@ -161,98 +162,162 @@ fun TarjetaGame(game: Game){
 }
 
 @Composable
-fun Listas(paddingValues: PaddingValues){
+fun Listas(paddingValues: PaddingValues) {
+    var pendientesMenuExpanded by remember { mutableStateOf(false) }
+    var jugandoMenuExpanded by remember { mutableStateOf(false) }
+    var jugadoMenuExpanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        Card(
-            border = BorderStroke(2.dp, Color.LightGray),
-            shape = RoundedCornerShape(8.dp),
+        // Jugando
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
                 .fillMaxWidth()
-                .height(100.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable(onClick = { /* Acción al hacer clic en Jugando */ }),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Jugando",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
-                IconButton(
-                    onClick = { /* Mostrar opciones */ },
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
-                ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                Box {
+                    IconButton(onClick = { jugandoMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Más opciones"
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = jugandoMenuExpanded,
+                        onDismissRequest = { jugandoMenuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Renombrar Critilista") },
+                            onClick = { jugandoMenuExpanded = false }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "Borrar Critilista",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            onClick = { jugandoMenuExpanded = false }
+                        )
+                    }
                 }
             }
         }
 
-        Card(
-            border = BorderStroke(2.dp, Color.LightGray),
-            shape = RoundedCornerShape(8.dp),
+        // Jugado
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
                 .fillMaxWidth()
-                .height(100.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable(onClick = { /* Acción al hacer clic en Jugado */ }),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Jugados",
+                    text = "Jugado",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
-                IconButton(
-                    onClick = { /* Mostrar opciones */ },
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
-                ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                Box {
+                    IconButton(onClick = { jugadoMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Más opciones"
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = jugadoMenuExpanded,
+                        onDismissRequest = { jugadoMenuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Renombrar Critilista") },
+                            onClick = { jugadoMenuExpanded = false }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "Borrar Critilista",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            onClick = { jugadoMenuExpanded = false }
+                        )
+                    }
                 }
             }
         }
 
-        Card(
-            border = BorderStroke(2.dp, Color.LightGray),
-            shape = RoundedCornerShape(8.dp),
+        // Pendientes
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
                 .fillMaxWidth()
-                .height(100.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable(onClick = { /* Acción al hacer clic en Pendientes */ }),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Pendientes",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
-                IconButton(
-                    onClick = { /* Mostrar opciones */ },
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
-                ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                Box {
+                    IconButton(onClick = { pendientesMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Más opciones"
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = pendientesMenuExpanded,
+                        onDismissRequest = { pendientesMenuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Renombrar Critilista") },
+                            onClick = { pendientesMenuExpanded = false }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "Borrar Critilista",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            onClick = { pendientesMenuExpanded = false }
+                        )
+                    }
                 }
             }
         }
