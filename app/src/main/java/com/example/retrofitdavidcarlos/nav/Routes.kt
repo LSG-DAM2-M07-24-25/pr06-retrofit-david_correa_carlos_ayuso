@@ -2,7 +2,9 @@ package com.example.retrofitdavidcarlos.nav
 
 sealed class Routes (val route: String){
     object HomeCompact : Routes("home_compact")
-    object InfoCompact : Routes("info_compact")
+    object InfoCompact : Routes("info_compact/{id}"){
+        fun createRoute(id: Int) = "info/$id"
+    }
     object ListasCompact : Routes("listas_compact")
     object JugadoCompact : Routes("jugado_compact")
     object JugandoCompact : Routes("jugando_compact")

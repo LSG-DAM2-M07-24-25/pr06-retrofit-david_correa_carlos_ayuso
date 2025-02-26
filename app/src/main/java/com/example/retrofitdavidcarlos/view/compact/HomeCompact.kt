@@ -99,8 +99,8 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
     Card(
         border = BorderStroke(2.dp, Color.LightGray),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.padding(8.dp)
-    ) {
+        modifier = Modifier.padding(8.dp),
+        onClick = {navController.navigate(Routes.InfoCompact.createRoute(game.id))}    ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
