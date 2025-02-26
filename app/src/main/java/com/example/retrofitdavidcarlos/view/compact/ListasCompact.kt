@@ -30,10 +30,12 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
+import com.example.retrofitdavidcarlos.model.Lista
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
+import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 
 @Composable
-fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
+fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel){
     val games: GameResponse by apiViewModel.games.observeAsState(GameResponse(emptyList()))
     var tabSeleccionado by remember { mutableStateOf(0) }
 
@@ -52,6 +54,8 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel){
         } else {
             Listas(
                 paddingValues = padding,
+                navController = navController,
+                viewModel = listViewModel
             )
         }
     }
@@ -162,170 +166,128 @@ fun TarjetaGame(game: Game){
 }
 
 @Composable
-fun Listas(paddingValues: PaddingValues) {
-    var pendientesMenuExpanded by remember { mutableStateOf(false) }
-    var jugandoMenuExpanded by remember { mutableStateOf(false) }
-    var jugadoMenuExpanded by remember { mutableStateOf(false) }
+fun Listas(paddingValues: PaddingValues, navController: NavHostController, viewModel: ListViewModel) {
+    var expandedMenu by remember { mutableStateOf<String?>(null) }
+    val listas by viewModel.listas.observeAsState(emptyList())
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        // Jugando
-        Surface(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clickable(onClick = { /* Acción al hacer clic en Jugando */ }),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            shape = RoundedCornerShape(8.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
+            Text(
+                text = "${listas.size}/${viewModel.maxListas} Listas",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Text(
+                text = "CREAR NUEVA LISTA",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Jugando",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Box {
-                    IconButton(onClick = { jugandoMenuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Más opciones"
-                        )
+                    .clickable {
+                        navController.navigate("crear_lista")
                     }
-                    DropdownMenu(
-                        expanded = jugandoMenuExpanded,
-                        onDismissRequest = { jugandoMenuExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Renombrar Critilista") },
-                            onClick = { jugandoMenuExpanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    "Borrar Critilista",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            },
-                            onClick = { jugandoMenuExpanded = false }
-                        )
-                    }
-                }
-            }
+                    .padding(vertical = 8.dp)
+            )
         }
 
-        // Jugado
-        Surface(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clickable(onClick = { /* Acción al hacer clic en Jugado */ }),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            shape = RoundedCornerShape(8.dp)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Jugado",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+            items(
+                items = listas,
+                key = { it.id }
+            ) { lista ->
+                ListasContainer(
+                    lista = lista,
+                    isMenuExpanded = expandedMenu == lista.id,
+                    onMenuClick = {
+                        expandedMenu = if (expandedMenu == lista.id) null else lista.id
+                    },
+                    onListClick = {
+                        //navController.navigate("infoView/${lista.id}")
+                    },
+                    onDelete = {
+                        viewModel.eliminarLista(lista.id)
+                    }
                 )
-                Box {
-                    IconButton(onClick = { jugadoMenuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Más opciones"
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = jugadoMenuExpanded,
-                        onDismissRequest = { jugadoMenuExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Renombrar Critilista") },
-                            onClick = { jugadoMenuExpanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    "Borrar Critilista",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            },
-                            onClick = { jugadoMenuExpanded = false }
-                        )
-                    }
-                }
-            }
-        }
-
-        // Pendientes
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clickable(onClick = { /* Acción al hacer clic en Pendientes */ }),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Pendientes",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Box {
-                    IconButton(onClick = { pendientesMenuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Más opciones"
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = pendientesMenuExpanded,
-                        onDismissRequest = { pendientesMenuExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Renombrar Critilista") },
-                            onClick = { pendientesMenuExpanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    "Borrar Critilista",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            },
-                            onClick = { pendientesMenuExpanded = false }
-                        )
-                    }
-                }
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ListasPreview(){
-    ListasCompact(navController = rememberNavController(), apiViewModel = ApiViewModel())
+fun ListasContainer(lista: Lista, isMenuExpanded: Boolean, onMenuClick: () -> Unit, onListClick: () -> Unit, onDelete: () -> Unit){
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onListClick),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        //shape = MaterialTheme.shapes.medium
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = lista.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Box {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Más opciones",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = isMenuExpanded,
+                        onDismissRequest = onMenuClick
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "Borrar Lista",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            onClick = {
+                                onDelete()
+                                onMenuClick()
+                            }
+                        )
+                    }
+                }
+
+            }
+
+            Text(
+                text = "${lista.itemCount} ${if (lista.itemCount == 1) "Item" else "Elementos"}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+    }
 }
