@@ -12,9 +12,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
+import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 
 class MainActivity : ComponentActivity() {
     private val apiViewModel: ApiViewModel by viewModels()
+    private val listaViewModel: ListViewModel by viewModels()
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 ){
                     val navigationController = rememberNavController()
                     val windowSize = calculateWindowSizeClass(this)
-                    EntryPoint(navigationController, apiViewModel, windowSize)
+                    EntryPoint(navigationController, apiViewModel, windowSize, listaViewModel)
                 }
             }
         }

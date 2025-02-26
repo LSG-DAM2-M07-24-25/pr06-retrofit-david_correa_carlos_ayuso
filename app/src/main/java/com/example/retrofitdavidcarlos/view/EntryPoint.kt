@@ -4,20 +4,23 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import com.example.retrofitdavidcarlos.nav.Routes
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.retrofitdavidcarlos.view.compact.*
 import com.example.retrofitdavidcarlos.view.medium.*
 import com.example.retrofitdavidcarlos.view.expanded.*
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
+import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 
 @Composable
-fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewModel, windowSize: WindowSizeClass){
+fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewModel, windowSize: WindowSizeClass, listViewModel: ListViewModel){
 
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            AppNavigationCompact(navigationController, apiViewModel)
+            AppNavigationCompact(navigationController, apiViewModel, listViewModel)
         }
         WindowWidthSizeClass.Medium -> {
             AppNavigationMedium(navigationController, apiViewModel)
@@ -26,13 +29,13 @@ fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewMod
             AppNavigationExpanded(navigationController, apiViewModel)
         }
         else -> {
-            AppNavigationCompact(navigationController, apiViewModel)
+            AppNavigationCompact(navigationController, apiViewModel, listViewModel)
         }
     }
 }
 
 @Composable
-fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: ApiViewModel){
+fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeCompact.route
@@ -41,12 +44,21 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
             HomeCompact(navigationController, apiViewModel)
         }
 
-        composable(Routes.InfoCompact.route){
-            InfoCompact(navigationController, apiViewModel)
+        composable(
+            Routes.InfoCompact.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            InfoCompact(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                id = backStackEntry.arguments?.getInt("id") ?: 0
+            )
         }
 
         composable(Routes.ListasCompact.route){
-            ListasCompact(navigationController, apiViewModel)
+            ListasCompact(navigationController, apiViewModel, listViewModel)
         }
 
         composable(Routes.JugandoCompact.route){
