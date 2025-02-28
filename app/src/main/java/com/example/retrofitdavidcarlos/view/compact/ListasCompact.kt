@@ -51,7 +51,11 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, 
             Favoritos(
                 games = games,
                 paddingValues = padding,
+<<<<<<< Updated upstream
                 apiViewModel = apiViewModel
+=======
+                viewModel = apiViewModel
+>>>>>>> Stashed changes
             )
         } else {
             Listas(
@@ -98,7 +102,19 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
+<<<<<<< Updated upstream
 fun Favoritos(games: GameResponse, paddingValues: PaddingValues, apiViewModel: ApiViewModel){
+=======
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiViewModel){
+    // Observar el LiveData de favoritos
+    val favoritos by viewModel.listaFavoritos.observeAsState(initial = emptyList())
+
+    // Llamar a la función para cargar los favoritos (solo una vez)
+    LaunchedEffect(key1 = true) {
+        viewModel.getFavorios()
+    }
+
+>>>>>>> Stashed changes
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +125,7 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, apiViewModel: A
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(games.results) { game ->
+            items(favoritos) { game ->
                 TarjetaGame(game = game)
             }
         }
