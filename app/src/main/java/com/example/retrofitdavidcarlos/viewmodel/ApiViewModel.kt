@@ -1,6 +1,7 @@
 package com.example.retrofitdavidcarlos.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,8 @@ class ApiViewModel : ViewModel() {
     val loading = _loading
     private val _games = MutableLiveData<GameResponse>()
     val games = _games
+    private val _listaFavoritos = MutableLiveData<List<Game>>()
+    val listaFavoritos: LiveData<List<Game>> = _listaFavoritos
     private val _favoritos = MutableLiveData<Set<Int>>(setOf())
     val favoritos = _favoritos
 
@@ -36,6 +39,14 @@ class ApiViewModel : ViewModel() {
                 } else {
                     Log.e("Error :", response.message())
                 }
+            }
+        }
+    }
+    fun getFavorios(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = roomRepository.getFavorites()
+            withContext(Dispatchers.Main){
+                _listaFavoritos.value = response
             }
         }
     }
