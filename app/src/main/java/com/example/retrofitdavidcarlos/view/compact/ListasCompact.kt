@@ -43,13 +43,15 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, 
         apiViewModel.getGames()
     }
     Scaffold(
+        // topBar: Pasa el estado de tabSeleccionado + Lambda que cambia el estado de tabSeleccionado
         topBar = { Topbar(tabSeleccionado){ tabSeleccionado = it} },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         if (tabSeleccionado == 0){
             Favoritos(
                 games = games,
-                paddingValues = padding
+                paddingValues = padding,
+                apiViewModel = apiViewModel
             )
         } else {
             Listas(
@@ -96,7 +98,7 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun Favoritos(games: GameResponse, paddingValues: PaddingValues){
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues, apiViewModel: ApiViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -194,7 +196,7 @@ fun Listas(paddingValues: PaddingValues, navController: NavHostController, viewM
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .clickable {
-                        navController.navigate("crear_lista")
+                        //navController.navigate(/**/)
                     }
                     .padding(vertical = 8.dp)
             )

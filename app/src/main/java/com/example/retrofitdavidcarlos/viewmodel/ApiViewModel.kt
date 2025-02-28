@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.retrofitdavidcarlos.api.Repository
 import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
+import com.example.retrofitdavidcarlos.room.RoomRepository
 import com.example.retrofitdavidcarlos.model.GameResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,8 @@ import kotlinx.coroutines.withContext
 class ApiViewModel : ViewModel() {
 
     private val repository = Repository()
-    private val roomRepository = com.example.retrofitdavidcarlos.room.RoomRepository()
+    private val _roomRepository = RoomRepository()
+    val roomRepository = _roomRepository
     private val _loading = MutableLiveData(true)
     val loading = _loading
     private val _games = MutableLiveData<GameResponse>()

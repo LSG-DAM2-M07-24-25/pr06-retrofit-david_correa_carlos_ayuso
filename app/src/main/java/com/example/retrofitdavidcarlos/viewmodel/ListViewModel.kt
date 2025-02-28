@@ -9,6 +9,8 @@ class ListViewModel: ViewModel() {
     private val _listas = MutableLiveData<List<Lista>>()
     val listas: LiveData<List<Lista>> = _listas
 
+
+
     private val _maxListas = 10
     val maxListas = _maxListas
 
@@ -23,7 +25,7 @@ class ListViewModel: ViewModel() {
             Lista(
                 id = "2",
                 name = "Jugado",
-                itemCount = 26,
+                itemCount = 7,
                 isDefault = true
             ),
             Lista(
