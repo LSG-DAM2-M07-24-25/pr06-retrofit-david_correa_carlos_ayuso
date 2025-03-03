@@ -17,12 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
@@ -31,6 +35,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
 import com.example.retrofitdavidcarlos.model.Lista
+import com.example.retrofitdavidcarlos.nav.Routes
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 
@@ -50,7 +55,8 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, 
             Favoritos(
                 games = games,
                 paddingValues = padding,
-                viewModel = apiViewModel
+                viewModel = apiViewModel,
+                navController = navController
             )
         } else {
             Listas(
@@ -97,7 +103,7 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiViewModel){
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiViewModel, navController: NavHostController){
     // Observar el LiveData de favoritos
     val favoritos by viewModel.listaFavoritos.observeAsState(initial = emptyList())
 
@@ -117,7 +123,10 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiV
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(favoritos) { game ->
-                TarjetaGame(game = game)
+                TarjetaGame(game = game,
+                    navController = navController,
+                    apiViewModel = viewModel
+                )
             }
         }
     }
@@ -125,51 +134,87 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiV
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TarjetaGame(game: Game){
-    Row(
+fun TarjetaGame(game: Game, navController: NavHostController, apiViewModel: ApiViewModel){
+
+    Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
     ) {
-        GlideImage(
-            model = game.background_image,
-            contentDescription = game.name,
+        Row(
             modifier = Modifier
-                .width(120.dp)
-                .height(150.dp)
-        )
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp)
+                .fillMaxWidth()
+                .height(120.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            // Game image
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(120.dp)
             ) {
-                Text(
-                    text = game.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
+                GlideImage(
+                    model = game.background_image,
+                    contentDescription = "Game Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-
-                Row {
-                    IconButton(onClick = { /* Marcar favorito */ }) {
-                        Icon(Icons.Default.FavoriteBorder, "Favorito")
-                    }
-                    IconButton(onClick = { /* Mostrar opciones */ }) {
-                        Icon(Icons.Default.MoreVert, "Más opciones")
-                    }
-                }
             }
 
-            Text(
-                text = "Fecha: ${game.released} |  Rating: ${game.rating}/5",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(
+                            text = game.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        IconButton(
+                            onClick = { apiViewModel.addFavorito(game) },
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (game.is_favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Favorito",
+                                tint = if (game.is_favorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Fecha: ${game.released ?: "N/A"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Rating: ${game.rating}/5",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     }
 }
