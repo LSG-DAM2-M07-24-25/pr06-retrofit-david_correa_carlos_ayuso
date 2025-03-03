@@ -54,18 +54,28 @@ class ApiViewModel : ViewModel() {
     fun addFavorito(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                game.is_favorite = !game.is_favorite
+
                 if (!roomRepository.findByName(game)) {
-                    game.is_favorite = true
                     game.state = Estado.PENDIENTE
                     roomRepository.addJuego(game)
+                } else {
+                    roomRepository.updateFav(game, game.is_favorite)
                 }
-                if (!game.is_favorite){
-                    roomRepository.updateFav(game, true)
-                }else{
-                    roomRepository.updateFav(game, false)
 
+                withContext(Dispatchers.Main) {
+                    games.value?.let { currentGames ->
+                        val updatedResults = currentGames.results.map {
+                            if (it.id == game.id) {
+                                it.copy(is_favorite = game.is_favorite)
+                            } else {
+                                it
+                            }
+                        }
+                        games.value = GameResponse(updatedResults)
+                    }
+                    getFavorios()
                 }
-                getGames()
             } catch (e: Exception) {
                 Log.e("Database", "Error al guardar el juego: ${e.message}")
             }
