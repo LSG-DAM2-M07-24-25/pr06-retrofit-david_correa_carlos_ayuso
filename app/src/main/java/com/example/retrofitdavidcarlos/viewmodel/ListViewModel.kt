@@ -9,8 +9,6 @@ class ListViewModel: ViewModel() {
     private val _listas = MutableLiveData<List<Lista>>()
     val listas: LiveData<List<Lista>> = _listas
 
-
-
     private val _maxListas = 10
     val maxListas = _maxListas
 
