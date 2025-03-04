@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Database
 import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
@@ -14,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RoomViewModel: ViewModel() {
+class RoomViewModel : ViewModel() {
 
     private val _roomRepository = RoomRepository()
     val roomRepository = _roomRepository
@@ -24,10 +25,10 @@ class RoomViewModel: ViewModel() {
     private val _games = MutableLiveData<GameResponse>()
     val games = _games
 
-    fun getFavorios(){
+    fun getFavorios() {
         CoroutineScope(Dispatchers.IO).launch {
             val response = roomRepository.getFavorites()
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 _listaFavoritos.value = response
             }
         }
@@ -89,5 +90,25 @@ class RoomViewModel: ViewModel() {
         return resultado
     }
 
+    fun updateEstado(game: Game, estado: Estado) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+            roomRepository.updateState(game, estado)
+
+            }catch (e: Exception){
+                Log.e("Database", "Error al cambiar el Estado del juego: ${e.message}")
+            }
+        }
+    }
+
+    fun eliminarJuego(game: Game){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                roomRepository.removeGame(game)
+            }catch (e: Exception){
+                Log.e("Database", "Error al eliminar el juego: ${e.message}")
+            }
+        }
+    }
 
 }

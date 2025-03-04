@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
+import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 
 @Dao
@@ -28,8 +30,11 @@ interface GameDao {
     fun addJuego(juego: Game)
 
     @Delete
-    fun removeFavorite(favoriteGames: Game)
+    fun removeGame(game: Game)
 
     @Query("UPDATE games SET is_favorite = :isFavorite WHERE name = :name")
     fun updateFavoriteStatus(name: String, isFavorite: Boolean)
+
+    @Query("UPDATE games SET state = :estado WHERE name = :name ")
+    fun updateState(name:String, estado: Estado)
 }

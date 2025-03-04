@@ -1,5 +1,6 @@
 package com.example.retrofitdavidcarlos.room
 
+import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 
 class RoomRepository {
@@ -12,4 +13,6 @@ class RoomRepository {
     suspend fun getJugados(): MutableList<Game> = daoInterface.getJugados()
     suspend fun addJuego(game: Game) = daoInterface.addJuego(game)
     suspend fun updateFav(game: Game, favorite: Boolean) = daoInterface.updateFavoriteStatus(game.name, favorite)
+    suspend fun updateState(game:Game, estado: Estado) = daoInterface.updateState(game.name, estado)
+    suspend fun removeGame(game: Game) = daoInterface.removeGame(game)
 }
