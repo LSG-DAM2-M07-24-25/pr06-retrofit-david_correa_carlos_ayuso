@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,11 +38,13 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
 import com.example.retrofitdavidcarlos.nav.Routes
+import com.example.retrofitdavidcarlos.view.compact.util.MenuEstado
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
+import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
+fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
     val showLoading: Boolean by apiViewModel.loading.observeAsState(true)
     val games: GameResponse by apiViewModel.games.observeAsState(GameResponse(emptyList()))
 
@@ -79,7 +82,7 @@ fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(games.results) { game ->
-                        GameItem(navController, game, apiViewModel)
+                        GameItem(navController, game, apiViewModel, roomViewModel)
                     }
                 }
             }
@@ -122,9 +125,11 @@ fun BottomNavigationBar(navController: NavHostController) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel) {
+fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
     // Keep track of the favorite state within the composable
     val isFavorite = remember { mutableStateOf(game.is_favorite) }
+
+    var expanded by remember { mutableStateOf(false) }
 
     // Update the state when the game changes
     LaunchedEffect(game.is_favorite) {
@@ -136,7 +141,7 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
+        //onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
     ) {
         Row(
             modifier = Modifier
@@ -178,15 +183,17 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
-                        onClick = { apiViewModel.guardarJuego(game) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.List,
-                            contentDescription = "Add to list",
-                            tint = MaterialTheme.colorScheme.primary
+
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        }
+                        MenuEstado(
+                            game = game,
+                            roomViewModel = roomViewModel,
+                            expanded = expanded,
+                            onDismissRequest = {expanded = false}
                         )
-                    }
+
 
                     IconButton(
                         onClick = {
