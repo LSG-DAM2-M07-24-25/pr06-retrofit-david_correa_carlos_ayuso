@@ -68,10 +68,10 @@ fun InfoExpanded(navController: NavHostController, apiViewModel: ApiViewModel, r
                 GlideImage(
                     model = gameDetails.background_image,
                     contentDescription = "Game Image",
-                    contentScale = ContentScale.Crop, // O prueba con Fit si sigue recortando demasiado
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f) // Ajusta según la proporción típica de tus imágenes
+                        .aspectRatio(16f / 9f)
                 )
 
 
