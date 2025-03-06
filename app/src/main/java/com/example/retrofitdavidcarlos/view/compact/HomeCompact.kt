@@ -1,8 +1,7 @@
 package com.example.retrofitdavidcarlos.view.compact
 
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -128,16 +127,22 @@ fun BottomNavigationBar(navController: NavHostController) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
-    val isFavorite = remember { mutableStateOf(game.is_favorite) }
+    val estaGuardado by roomViewModel.juegosGuardados.observeAsState(setOf())
+    val esFavorito by roomViewModel.juegosFavoritos.observeAsState(setOf())
     var expanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(game.is_favorite) {
-        isFavorite.value = game.is_favorite
+    LaunchedEffect(Unit) {
+        roomViewModel.actualizarJuegosGuardados()
     }
 
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .border(
+                2.dp,
+                if (estaGuardado.contains(game.name)) Color.Green else Color.Transparent,
+                RoundedCornerShape(12.dp)
+            ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         //onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
@@ -182,28 +187,26 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                    }
 
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                        }
-                        MenuEstado(
-                            game = game,
-                            roomViewModel = roomViewModel,
-                            expanded = expanded,
-                            onDismissRequest = {expanded = false}
-                        )
-
+                    MenuEstado(
+                        game = game,
+                        roomViewModel = roomViewModel,
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    )
 
                     IconButton(
                         onClick = {
-                            apiViewModel.addFavorito(game)
-                            isFavorite.value = !isFavorite.value
+                            roomViewModel.addFavorito(game)
                         }
                     ) {
                         Icon(
-                            imageVector = if (isFavorite.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            imageVector = if (esFavorito.contains(game.name)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             contentDescription = "Favorite",
-                            tint = if (isFavorite.value) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = if (esFavorito.contains(game.name)) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

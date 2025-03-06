@@ -46,12 +46,14 @@ fun MenuEstado(
 //    LaunchedEffect(nuevoEstado) {
 //        estaGuardado = nuevoEstado
 //    }
-    val estaGuardado by roomViewModel.estaGuardado(game).observeAsState(false)
+    val estaGuardado by roomViewModel.juegosGuardados.observeAsState(setOf())
     val context = LocalContext.current
+
     fun realizarAccion(mensaje: String, accion: () -> Unit) {
         accion()
         Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
-        onDismissRequest() // Cierra el menú
+        onDismissRequest()
+        roomViewModel.actualizarJuegosGuardados()
     }
 
     DropdownMenu(
@@ -62,7 +64,7 @@ fun MenuEstado(
             text = { Text("Guardar") },
             leadingIcon = { Icon(Icons.Outlined.AddCircle, contentDescription = null) },
             onClick = { realizarAccion("Juego guardado") { roomViewModel.guardarJuego(game) } },
-            enabled = !estaGuardado
+            enabled = !estaGuardado.contains(game.name)
         )
 
         HorizontalDivider()
@@ -91,7 +93,7 @@ fun MenuEstado(
             text = { Text("Eliminar de Guardados") },
             leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
             onClick = {realizarAccion("Juego eliminado") { roomViewModel.eliminarJuego(game) } },
-            enabled = estaGuardado
+            enabled = estaGuardado.contains(game.name)
         )
     }
 }
