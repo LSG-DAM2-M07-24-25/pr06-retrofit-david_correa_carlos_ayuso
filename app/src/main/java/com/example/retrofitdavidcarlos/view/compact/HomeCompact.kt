@@ -145,7 +145,7 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
             ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        //onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
+        onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
     ) {
         Row(
             modifier = Modifier
