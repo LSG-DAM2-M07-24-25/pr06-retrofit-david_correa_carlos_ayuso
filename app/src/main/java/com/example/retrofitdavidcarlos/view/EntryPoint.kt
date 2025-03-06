@@ -65,7 +65,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         }
 
         composable(Routes.ListasCompact.route){
-            ListasCompact(navigationController, apiViewModel, listViewModel)
+            ListasCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
 
         composable(

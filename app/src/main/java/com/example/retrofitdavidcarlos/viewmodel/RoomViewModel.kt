@@ -24,6 +24,11 @@ class RoomViewModel : ViewModel() {
     private val _favoritos = MutableLiveData<Set<Int>>(setOf())
     private val _games = MutableLiveData<GameResponse>()
     val games = _games
+    private val _juegosGuardados = MutableLiveData<Set<String>>(setOf())
+    val juegosGuardados: LiveData<Set<String>> = _juegosGuardados
+    
+    private val _juegosFavoritos = MutableLiveData<Set<String>>(setOf())
+    val juegosFavoritos: LiveData<Set<String>> = _juegosFavoritos
 
     fun getFavorios() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -33,34 +38,46 @@ class RoomViewModel : ViewModel() {
             }
         }
     }
+    fun esFavorito(game: Game): LiveData<Boolean> {
+        val resultado = MutableLiveData<Boolean>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val favorito = roomRepository.isFavorite(game)
+            withContext(Dispatchers.Main) {
+                resultado.value = favorito
+            }
+        }
+        return resultado
+    }
+
+    fun actualizarJuegosGuardados() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val juegos = roomRepository.getAllGames()
+                val favoritos = roomRepository.getFavorites()
+                withContext(Dispatchers.Main) {
+                    _juegosGuardados.value = juegos.map { it.name }.toSet()
+                    _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+                }
+            } catch (e: Exception) {
+                Log.e("RoomViewModel", "Error al actualizar juegos", e)
+            }
+        }
+    }
 
     fun addFavorito(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                game.is_favorite = !game.is_favorite
-
+                val nuevoEstado = !game.is_favorite
+                game.is_favorite = nuevoEstado
                 if (!roomRepository.findByName(game)) {
                     game.state = Estado.PENDIENTE
                     roomRepository.addJuego(game)
                 } else {
-                    roomRepository.updateFav(game, game.is_favorite)
+                    roomRepository.updateFav(game, nuevoEstado)
                 }
-
-                withContext(Dispatchers.Main) {
-                    games.value?.let { currentGames ->
-                        val updatedResults = currentGames.results.map {
-                            if (it.id == game.id) {
-                                it.copy(is_favorite = game.is_favorite)
-                            } else {
-                                it
-                            }
-                        }
-                        games.value = GameResponse(updatedResults)
-                    }
-                    getFavorios()
-                }
+                actualizarJuegosGuardados()
             } catch (e: Exception) {
-                Log.e("Database", "Error al guardar el juego: ${e.message}")
+                Log.e("Database", "Error al actualizar favorito: ${e.message}")
             }
         }
     }
@@ -72,23 +89,14 @@ class RoomViewModel : ViewModel() {
                     game.is_favorite = false
                     game.state = Estado.PENDIENTE
                     roomRepository.addJuego(game)
+                    actualizarJuegosGuardados()
                 }
             } catch (e: Exception) {
                 Log.e("Database", "Error al guardar el juego: ${e.message}")
             }
         }
     }
-
-    fun estaGuardado(game: Game): LiveData<Boolean> {
-        val resultado = MutableLiveData<Boolean>()
-        viewModelScope.launch(Dispatchers.IO) {
-            val existe = roomRepository.findByName(game)
-            withContext(Dispatchers.Main) {
-                resultado.value = existe
-            }
-        }
-        return resultado
-    }
+    
 
     fun updateEstado(game: Game, estado: Estado) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -105,6 +113,7 @@ class RoomViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 roomRepository.removeGame(game)
+                actualizarJuegosGuardados()
             }catch (e: Exception){
                 Log.e("Database", "Error al eliminar el juego: ${e.message}")
             }

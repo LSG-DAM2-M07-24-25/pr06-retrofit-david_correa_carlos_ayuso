@@ -39,10 +39,11 @@ import com.example.retrofitdavidcarlos.model.Lista
 import com.example.retrofitdavidcarlos.nav.Routes
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
+import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 
 @Composable
-fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel){
-    val games: GameResponse by apiViewModel.games.observeAsState(GameResponse(emptyList()))
+fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
+    val games: GameResponse by roomViewModel.games.observeAsState(GameResponse(emptyList()))
     var tabSeleccionado by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -56,8 +57,9 @@ fun ListasCompact(navController: NavHostController, apiViewModel: ApiViewModel, 
             Favoritos(
                 games = games,
                 paddingValues = padding,
-                viewModel = apiViewModel,
-                navController = navController
+                navController = navController,
+                roomViewModel = roomViewModel
+
             )
         } else {
             Listas(
@@ -104,13 +106,13 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiViewModel, navController: NavHostController){
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues,  navController: NavHostController, roomViewModel: RoomViewModel){
     // Observar el LiveData de favoritos
-    val favoritos by viewModel.listaFavoritos.observeAsState(initial = emptyList())
+    val favoritos by roomViewModel.listaFavoritos.observeAsState(initial = emptyList())
 
     // Llamar a la función para cargar los favoritos (solo una vez)
     LaunchedEffect(key1 = true) {
-        viewModel.getFavorios()
+        roomViewModel.getFavorios()
     }
 
     Column(
@@ -126,7 +128,7 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiV
             items(favoritos) { game ->
                 TarjetaGame(game = game,
                     navController = navController,
-                    apiViewModel = viewModel
+                    roomViewModel = roomViewModel
                 )
             }
         }
@@ -135,7 +137,7 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, viewModel: ApiV
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TarjetaGame(game: Game, navController: NavHostController, apiViewModel: ApiViewModel){
+fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: RoomViewModel){
 
     Card(
         modifier = Modifier
@@ -188,7 +190,7 @@ fun TarjetaGame(game: Game, navController: NavHostController, apiViewModel: ApiV
                         )
 
                         IconButton(
-                            onClick = { apiViewModel.addFavorito(game) },
+                            onClick = { roomViewModel.addFavorito(game) },
                             modifier = Modifier.size(28.dp)
                         ) {
                             Icon(

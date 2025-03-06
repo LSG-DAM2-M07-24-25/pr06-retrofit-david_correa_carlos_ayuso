@@ -37,4 +37,10 @@ interface GameDao {
 
     @Query("UPDATE games SET state = :estado WHERE name = :name ")
     fun updateState(name:String, estado: Estado)
+
+    @Query("SELECT is_favorite FROM games WHERE name = :name")
+    fun isFavorite(name: String): Boolean
+
+    @Query("SELECT * FROM games")
+    fun getAllGames(): List<Game>
 }
