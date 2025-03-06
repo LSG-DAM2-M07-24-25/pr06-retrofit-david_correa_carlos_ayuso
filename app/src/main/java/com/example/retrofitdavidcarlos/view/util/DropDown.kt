@@ -1,4 +1,4 @@
-package com.example.retrofitdavidcarlos.view.compact.util
+package com.example.retrofitdavidcarlos.view.util
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
