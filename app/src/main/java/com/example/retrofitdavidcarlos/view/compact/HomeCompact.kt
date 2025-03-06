@@ -41,11 +41,12 @@ import com.example.retrofitdavidcarlos.model.GameResponse
 import com.example.retrofitdavidcarlos.nav.Routes
 import com.example.retrofitdavidcarlos.view.compact.util.MenuEstado
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
+import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
+fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel, listViewModel: ListViewModel) {
     val showLoading: Boolean by apiViewModel.loading.observeAsState(true)
     val games: GameResponse by apiViewModel.games.observeAsState(GameResponse(emptyList()))
 
@@ -83,7 +84,7 @@ fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, ro
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(games.results) { game ->
-                        GameItem(navController, game, apiViewModel, roomViewModel)
+                        GameItem(navController, game, listViewModel, roomViewModel)
                     }
                 }
             }
@@ -126,7 +127,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
+fun GameItem(navController: NavHostController, game: Game, listViewModel: ListViewModel, roomViewModel: RoomViewModel) {
     val estaGuardado by roomViewModel.juegosGuardados.observeAsState(setOf())
     val esFavorito by roomViewModel.juegosFavoritos.observeAsState(setOf())
     var expanded by remember { mutableStateOf(false) }
@@ -195,7 +196,8 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
                         game = game,
                         roomViewModel = roomViewModel,
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        listViewModel = listViewModel
                     )
 
                     IconButton(

@@ -48,7 +48,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         startDestination = Routes.HomeCompact.route
     ){
         composable(Routes.HomeCompact.route){
-            HomeCompact(navigationController, apiViewModel, roomViewModel)
+            HomeCompact(navigationController, apiViewModel, roomViewModel, listViewModel)
         }
 
         composable(

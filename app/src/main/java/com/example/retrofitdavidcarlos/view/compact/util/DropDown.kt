@@ -14,6 +14,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
+import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import okhttp3.Request
 
 
@@ -35,19 +37,13 @@ import okhttp3.Request
 fun MenuEstado(
     game: Game,
     roomViewModel: RoomViewModel,
+    listViewModel: ListViewModel,
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
-//    var estaGuardado by remember { mutableStateOf(false) }
-//    val estaGuardadoLiveData = remember { roomViewModel.estaGuardado(game) }
-//
-//    val nuevoEstado by estaGuardadoLiveData.observeAsState(false)
-
-//    LaunchedEffect(nuevoEstado) {
-//        estaGuardado = nuevoEstado
-//    }
     val estaGuardado by roomViewModel.juegosGuardados.observeAsState(setOf())
     val context = LocalContext.current
+    val listas by listViewModel.listas.observeAsState(emptyList())
 
     fun realizarAccion(mensaje: String, accion: () -> Unit) {
         accion()
@@ -58,7 +54,7 @@ fun MenuEstado(
 
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest =  onDismissRequest
+        onDismissRequest = onDismissRequest
     ) {
         DropdownMenuItem(
             text = { Text("Guardar") },
@@ -78,7 +74,7 @@ fun MenuEstado(
         DropdownMenuItem(
             text = { Text("Añadir a Jugando") },
             leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-            onClick = {realizarAccion("Estado cambiado a Jugando") { roomViewModel.updateEstado(game, Estado.JUGANDO) } }
+            onClick = { realizarAccion("Estado cambiado a Jugando") { roomViewModel.updateEstado(game, Estado.JUGANDO) } }
         )
 
         DropdownMenuItem(
@@ -89,10 +85,43 @@ fun MenuEstado(
 
         HorizontalDivider()
 
+        // Sección de listas personalizadas
+        Text(
+            text = "Añadir a lista personalizada",
+            modifier = Modifier.padding(8.dp),
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        listas.filter { !it.isDefault }.forEach { lista ->
+            val estaEnLista = listViewModel.estaJuegoEnLista(lista.id, game)
+            DropdownMenuItem(
+                text = { Text(lista.name) },
+                leadingIcon = { 
+                    Icon(
+                        if (estaEnLista) Icons.Default.Delete else Icons.Outlined.AddCircle,
+                        contentDescription = null
+                    )
+                },
+                onClick = {
+                    if (estaEnLista) {
+                        realizarAccion("Juego eliminado de ${lista.name}") {
+                            listViewModel.eliminarJuegoDeLista(lista.id, game)
+                        }
+                    } else {
+                        realizarAccion("Juego añadido a ${lista.name}") {
+                            listViewModel.agregarJuegoALista(lista.id, game)
+                        }
+                    }
+                }
+            )
+        }
+
+        HorizontalDivider()
+
         DropdownMenuItem(
             text = { Text("Eliminar de Guardados") },
             leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
-            onClick = {realizarAccion("Juego eliminado") { roomViewModel.eliminarJuego(game) } },
+            onClick = { realizarAccion("Juego eliminado") { roomViewModel.eliminarJuego(game) } },
             enabled = estaGuardado.contains(game.name)
         )
     }
