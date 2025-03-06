@@ -96,7 +96,7 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
         startDestination = Routes.HomeMedium.route
     ){
         composable(Routes.HomeMedium.route){
-            HomeMedium(navigationController, apiViewModel,)
+            HomeMedium(navigationController, apiViewModel, roomViewModel, listViewModel)
         }
 
         composable(
@@ -114,7 +114,7 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
         }
 
         composable(Routes.ListasMedium.route){
-            ListasMedium(navigationController, apiViewModel)
+            ListasMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
 
         composable(
@@ -130,8 +130,8 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
                 id = backStackEntry.arguments?.getInt("id") ?: 0
             )
         }
-        composable(Routes.CrearListaCompact.route){
-            CrearListasMedium(navigationController, listViewModel)
+        composable(Routes.CrearListaMedium.route){
+            CrearListaMedium(navigationController, listViewModel)
         }
     }
 }
