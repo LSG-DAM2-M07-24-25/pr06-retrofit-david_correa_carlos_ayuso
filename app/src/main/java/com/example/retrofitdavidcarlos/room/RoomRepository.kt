@@ -4,7 +4,8 @@ import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 
 class RoomRepository {
-    val daoInterface = GameApplication.database.GameDao()
+
+    private val daoInterface = GameApplication.database.GameDao()
 
     suspend fun getFavorites(): MutableList<Game> = daoInterface.getFavorites()
     suspend fun findByName(game: Game) = daoInterface.findByName(game.name).isNotEmpty()
@@ -15,4 +16,6 @@ class RoomRepository {
     suspend fun updateFav(game: Game, favorite: Boolean) = daoInterface.updateFavoriteStatus(game.name, favorite)
     suspend fun updateState(game:Game, estado: Estado) = daoInterface.updateState(game.name, estado)
     suspend fun removeGame(game: Game) = daoInterface.removeGame(game)
+    suspend fun isFavorite(game: Game): Boolean = daoInterface.isFavorite(game.name)
+    suspend fun getAllGames(): List<Game> = daoInterface.getAllGames()
 }
