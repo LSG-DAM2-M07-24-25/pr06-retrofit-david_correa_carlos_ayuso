@@ -54,13 +54,14 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         composable(
             Routes.InfoCompact.route,
             arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
+                navArgument("id") { type = NavType.IntType }
             )
         ) { backStackEntry ->
             InfoCompact(
                 apiViewModel = apiViewModel,
                 navController = navigationController,
-                id = backStackEntry.arguments?.getInt("id") ?: 0
+                id = backStackEntry.arguments?.getInt("id") ?: 0,
+                roomViewModel = roomViewModel
             )
         }
 
@@ -71,7 +72,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         composable(
             Routes.ContenidoListasCompact.route,
             arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
+                navArgument("id") { type = NavType.IntType }
             )
         ) { backStackEntry ->
             ContenidoListasCompact(
