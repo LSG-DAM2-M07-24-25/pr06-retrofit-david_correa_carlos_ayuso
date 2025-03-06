@@ -21,7 +21,6 @@ class MainActivity : ComponentActivity() {
     private val listaViewModel: ListViewModel by viewModels()
     private val roomViewModel: RoomViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
