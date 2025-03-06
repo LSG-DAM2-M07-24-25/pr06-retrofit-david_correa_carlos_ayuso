@@ -249,7 +249,7 @@ fun Listas(paddingValues: PaddingValues, navController: NavHostController, viewM
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .clickable {
-                        navController.navigate("crear_lista")
+                        navController.navigate(Routes.CrearListaCompact.route)
                     }
                     .padding(vertical = 8.dp)
             )

@@ -68,16 +68,22 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
             ListasCompact(navigationController, apiViewModel, listViewModel)
         }
 
-        composable(Routes.JugandoCompact.route){
-            JugandoCompact(navigationController, apiViewModel)
+        composable(
+            Routes.ContenidoListasCompact.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            ContenidoListasCompact(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                listViewModel = listViewModel,
+                id = backStackEntry.arguments?.getInt("id") ?: 0
+            )
         }
 
-        composable(Routes.JugadoCompact.route){
-            JugadoCompact(navigationController, apiViewModel)
-        }
-
-        composable(Routes.PendienteCompact.route){
-            PendienteCompact(navigationController, apiViewModel)
+        composable(Routes.CrearListaCompact.route){
+            CrearListaCompact(navigationController, listViewModel)
         }
     }
 }

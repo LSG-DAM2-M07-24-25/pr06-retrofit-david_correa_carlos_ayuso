@@ -6,9 +6,10 @@ sealed class Routes(val route: String) {
         fun createRoute(id: Int) = "info_compact/$id"  // Corregido para usar la misma ruta
     }
     object ListasCompact : Routes("listas_compact")
-    object JugadoCompact : Routes("jugado_compact")
-    object JugandoCompact : Routes("jugando_compact")
-    object PendienteCompact : Routes("pendiente_compact")
+    object ContenidoListasCompact : Routes("contenido_listas_compact/{id}"){
+        fun createRoute(id: Int) = "contenido_listas_compact/$id"
+    }
+    object CrearListaCompact : Routes("crear_lista_compact")
 
     object HomeMedium : Routes("home_medium")
     object InfoMedium : Routes("info_medium")
