@@ -1,6 +1,8 @@
 package com.example.retrofitdavidcarlos.view.compact
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -126,12 +128,9 @@ fun BottomNavigationBar(navController: NavHostController) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel) {
-    // Keep track of the favorite state within the composable
     val isFavorite = remember { mutableStateOf(game.is_favorite) }
-
     var expanded by remember { mutableStateOf(false) }
 
-    // Update the state when the game changes
     LaunchedEffect(game.is_favorite) {
         isFavorite.value = game.is_favorite
     }
@@ -198,7 +197,6 @@ fun GameItem(navController: NavHostController, game: Game, apiViewModel: ApiView
                     IconButton(
                         onClick = {
                             apiViewModel.addFavorito(game)
-                            // Toggle the local state for immediate UI feedback
                             isFavorite.value = !isFavorite.value
                         }
                     ) {

@@ -3,6 +3,7 @@ package com.example.retrofitdavidcarlos.view
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,16 +18,21 @@ import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 
 @Composable
-fun EntryPoint(navigationController: NavHostController, apiViewModel: ApiViewModel, windowSize: WindowSizeClass, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
-
-    when (windowSize.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> {
+fun EntryPoint(
+    navigationController: NavHostController,
+    apiViewModel: ApiViewModel,
+    listViewModel: ListViewModel,
+    roomViewModel: RoomViewModel,
+    deviceType: String
+) {
+    when (deviceType) {
+        "compact" -> {
             AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
-        WindowWidthSizeClass.Medium -> {
+        "medium" -> {
             AppNavigationMedium(navigationController, apiViewModel, roomViewModel)
         }
-        WindowWidthSizeClass.Expanded -> {
+        "expanded" -> {
             AppNavigationExpanded(navigationController, apiViewModel)
         }
         else -> {
