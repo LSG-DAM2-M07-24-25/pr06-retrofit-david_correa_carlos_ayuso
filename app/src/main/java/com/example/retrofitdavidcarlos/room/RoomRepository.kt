@@ -9,9 +9,9 @@ class RoomRepository {
 
     suspend fun getFavorites(): MutableList<Game> = daoInterface.getFavorites()
     suspend fun findByName(game: Game) = daoInterface.findByName(game.name).isNotEmpty()
-    suspend fun getPendientes(): MutableList<Game> = daoInterface.getPendientes()
-    suspend fun getJugando(): MutableList<Game> = daoInterface.getJugando()
-    suspend fun getJugados(): MutableList<Game> = daoInterface.getJugados()
+    suspend fun getPendientes(): List<Game> = daoInterface.getPendientes()
+    suspend fun getJugando(): List<Game> = daoInterface.getJugando()
+    suspend fun getJugados(): List<Game> = daoInterface.getJugados()
     suspend fun addJuego(game: Game) = daoInterface.addJuego(game)
     suspend fun updateFav(game: Game, favorite: Boolean) = daoInterface.updateFavoriteStatus(game.name, favorite)
     suspend fun updateState(game:Game, estado: Estado) = daoInterface.updateState(game.name, estado)
