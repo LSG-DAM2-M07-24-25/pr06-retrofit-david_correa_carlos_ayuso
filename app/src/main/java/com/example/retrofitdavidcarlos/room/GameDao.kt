@@ -18,13 +18,13 @@ interface GameDao {
     fun findByName(name: String): MutableList<Game?>
 
     @Query("SELECT * FROM games WHERE state = 'PENDIENTE'")
-    fun getPendientes(): MutableList<Game>
+    fun getPendientes(): List<Game>
 
     @Query("SELECT * FROM games WHERE state = 'JUGANDO'")
-    fun getJugando(): MutableList<Game>
+    fun getJugando(): List<Game>
 
     @Query("SELECT * FROM games WHERE state = 'JUGADO'")
-    fun getJugados(): MutableList<Game>
+    fun getJugados(): List<Game>
 
     @Insert
     fun addJuego(juego: Game)
