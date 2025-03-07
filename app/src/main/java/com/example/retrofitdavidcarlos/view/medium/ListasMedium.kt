@@ -109,8 +109,8 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: 
     val favoritos by roomViewModel.listaFavoritos.observeAsState(initial = emptyList())
 
     // Llamar a la función para cargar los favoritos (solo una vez)
-    LaunchedEffect(Unit) {
-        roomViewModel.getFavoritos()
+    LaunchedEffect(key1 = true) {
+        roomViewModel.getFavorios()
     }
 
     Column(
@@ -142,7 +142,7 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        onClick = { navController.navigate(Routes.InfoCompact.createRoute(game.id)) }
+        onClick = { navController.navigate(Routes.InfoMedium.createRoute(game.id)) }
     ) {
         Row(
             modifier = Modifier
@@ -201,17 +201,19 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ){
-                        Text(
-                            text = "Fecha: ${game.released ?: "N/A"} | Rating: ${game.rating}/5",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Text(
+                        text = "Fecha: ${game.released ?: "N/A"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Rating: ${game.rating}/5",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
