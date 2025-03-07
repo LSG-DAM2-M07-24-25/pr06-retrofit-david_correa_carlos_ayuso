@@ -39,10 +39,11 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
 import com.example.retrofitdavidcarlos.nav.Routes
-import com.example.retrofitdavidcarlos.view.compact.util.MenuEstado
+import com.example.retrofitdavidcarlos.view.util.MenuEstado
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
+import okhttp3.internal.wait
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +100,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     NavigationBar(
         containerColor = Color.DarkGray,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        contentColor = Color.White
     ) {
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home") },
@@ -109,7 +110,14 @@ fun BottomNavigationBar(navController: NavHostController) {
                 navController.navigate(Routes.HomeCompact.route) {
                     popUpTo(Routes.HomeCompact.route) { inclusive = true }
                 }
-            }
+            },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                selectedTextColor = Color.White,
+                unselectedIconColor = Color.LightGray,
+                unselectedTextColor = Color.LightGray,
+                indicatorColor = Color.Gray
+            )
         )
 
         NavigationBarItem(
@@ -120,7 +128,14 @@ fun BottomNavigationBar(navController: NavHostController) {
                 navController.navigate(Routes.ListasCompact.route) {
                     popUpTo(Routes.HomeCompact.route)
                 }
-            }
+            },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                selectedTextColor = Color.White,
+                unselectedIconColor = Color.LightGray,
+                unselectedTextColor = Color.LightGray,
+                indicatorColor = Color.Gray
+            )
         )
     }
 }

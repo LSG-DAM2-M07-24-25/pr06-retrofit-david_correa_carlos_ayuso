@@ -30,10 +30,10 @@ fun EntryPoint(
             AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
         "medium" -> {
-            AppNavigationMedium(navigationController, apiViewModel, roomViewModel)
+            AppNavigationMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
         "expanded" -> {
-            AppNavigationExpanded(navigationController, apiViewModel)
+            AppNavigationExpanded(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
         else -> {
             AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
@@ -90,65 +90,95 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
 }
 
 @Composable
-fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel){
+fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeMedium.route
     ){
         composable(Routes.HomeMedium.route){
-            HomeMedium(navigationController, apiViewModel,)
+            HomeMedium(navigationController, apiViewModel, roomViewModel, listViewModel)
         }
 
-        composable(Routes.InfoMedium.route){
-            InfoMedium(navigationController, apiViewModel)
+        composable(
+            Routes.InfoMedium.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            InfoMedium(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                id = backStackEntry.arguments?.getInt("id") ?: 0,
+                roomViewModel = roomViewModel
+            )
         }
 
         composable(Routes.ListasMedium.route){
-            ListasMedium(navigationController, apiViewModel)
+            ListasMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
 
-        composable(Routes.JugandoMedium.route){
-            JugandoMedium(navigationController, apiViewModel)
+        composable(
+            Routes.ContenidoListasMedium.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            ContenidoListasMedium(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                listViewModel = listViewModel,
+                id = backStackEntry.arguments?.getInt("id") ?: 0
+            )
         }
-
-        composable(Routes.JugadoMedium.route){
-            JugadoMedium(navigationController, apiViewModel)
-        }
-
-        composable(Routes.PendienteMedium.route){
-            PendienteMedium(navigationController, apiViewModel)
+        composable(Routes.CrearListaMedium.route){
+            CrearListaMedium(navigationController, listViewModel)
         }
     }
 }
 
 @Composable
-fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel){
+fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeExpanded.route
     ){
         composable(Routes.HomeExpanded.route){
-            HomeExpanded(navigationController, apiViewModel)
+            HomeExpanded(navigationController, apiViewModel, roomViewModel, listViewModel)
         }
 
-        composable(Routes.InfoExpanded.route){
-            InfoExpanded(navigationController, apiViewModel)
+        composable(
+            Routes.InfoExpanded.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            InfoExpanded(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                id = backStackEntry.arguments?.getInt("id") ?: 0,
+                roomViewModel = roomViewModel
+            )
         }
 
         composable(Routes.ListasExpanded.route){
-            ListasExpanded(navigationController, apiViewModel)
+            ListasExpanded(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
 
-        composable(Routes.JugandoExpanded.route){
-            JugandoExpanded(navigationController, apiViewModel)
+        composable(
+            Routes.ContenidoListasExpanded.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            ContenidoListasExpanded(
+                apiViewModel = apiViewModel,
+                navController = navigationController,
+                listViewModel = listViewModel,
+                id = backStackEntry.arguments?.getInt("id") ?: 0
+            )
         }
-
-        composable(Routes.JugadoExpanded.route){
-            JugandoExpanded(navigationController, apiViewModel)
-        }
-
-        composable(Routes.PendienteExpanded.route){
-            PendienteExpanded(navigationController, apiViewModel)
+        composable(Routes.CrearListaExpanded.route){
+            CrearListaExpanded(navigationController, listViewModel)
         }
     }
 }
