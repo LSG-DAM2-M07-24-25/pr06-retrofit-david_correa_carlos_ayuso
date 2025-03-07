@@ -203,19 +203,17 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = "Fecha: ${game.released ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Rating: ${game.rating}/5",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ){
+                        Text(
+                            text = "Fecha: ${game.released ?: "N/A"} | Rating: ${game.rating}/5",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }
