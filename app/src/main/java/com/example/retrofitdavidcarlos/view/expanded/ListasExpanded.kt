@@ -113,8 +113,8 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: 
     val favoritos by roomViewModel.listaFavoritos.observeAsState(initial = emptyList())
 
     // Llamar a la función para cargar los favoritos (solo una vez)
-    LaunchedEffect(key1 = true) {
-        roomViewModel.getFavorios()
+    LaunchedEffect(Unit) {
+        roomViewModel.getFavoritos()
     }
 
     Column(
