@@ -16,6 +16,7 @@ import com.example.retrofitdavidcarlos.view.expanded.*
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
+import com.example.retrofitdavidcarlos.viewmodel.SearchBarViewModel
 
 @Composable
 fun EntryPoint(
@@ -23,32 +24,33 @@ fun EntryPoint(
     apiViewModel: ApiViewModel,
     listViewModel: ListViewModel,
     roomViewModel: RoomViewModel,
+    searchBarViewModel: SearchBarViewModel,
     deviceType: String
 ) {
     when (deviceType) {
         "compact" -> {
-            AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
+            AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel, searchBarViewModel)
         }
         "medium" -> {
-            AppNavigationMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
+            AppNavigationMedium(navigationController, apiViewModel, listViewModel, roomViewModel, searchBarViewModel)
         }
         "expanded" -> {
-            AppNavigationExpanded(navigationController, apiViewModel, listViewModel, roomViewModel)
+            AppNavigationExpanded(navigationController, apiViewModel, listViewModel, roomViewModel, searchBarViewModel)
         }
         else -> {
-            AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
+            AppNavigationCompact(navigationController, apiViewModel, listViewModel, roomViewModel, searchBarViewModel)
         }
     }
 }
 
 @Composable
-fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
+fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel, searchBarViewModel: SearchBarViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeCompact.route
     ){
         composable(Routes.HomeCompact.route){
-            HomeCompact(navigationController, apiViewModel, roomViewModel, listViewModel)
+            HomeCompact(navigationController, apiViewModel, roomViewModel, listViewModel, searchBarViewModel)
         }
 
         composable(
@@ -90,7 +92,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
 }
 
 @Composable
-fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
+fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel, searchBarViewModel: SearchBarViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeMedium.route
@@ -137,7 +139,7 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
 }
 
 @Composable
-fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
+fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel, searchBarViewModel: SearchBarViewModel){
     NavHost(
         navController = navigationController,
         startDestination = Routes.HomeExpanded.route

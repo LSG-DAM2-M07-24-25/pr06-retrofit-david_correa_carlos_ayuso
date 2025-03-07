@@ -12,14 +12,17 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import androidx.activity.viewModels
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
+import com.example.retrofitdavidcarlos.viewmodel.SearchBarViewModel
 
 class MainActivity : ComponentActivity() {
     private val apiViewModel: ApiViewModel by viewModels()
     private val listaViewModel: ListViewModel by viewModels()
     private val roomViewModel: RoomViewModel by viewModels()
+    private val searchBarViewModel: SearchBarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         else -> "compact"
                     }
 
-                    EntryPoint(navigationController, apiViewModel, listaViewModel, roomViewModel, deviceType)
+                    EntryPoint(navigationController, apiViewModel, listaViewModel, roomViewModel, searchBarViewModel, deviceType)
                 }
             }
         }
