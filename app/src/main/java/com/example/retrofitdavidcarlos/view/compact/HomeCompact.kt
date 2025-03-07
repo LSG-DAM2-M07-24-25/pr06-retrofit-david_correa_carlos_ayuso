@@ -203,17 +203,19 @@ fun GameItem(navController: NavHostController, game: Game, listViewModel: ListVi
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                    }
+                    Box {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        }
 
-                    MenuEstado(
-                        game = game,
-                        roomViewModel = roomViewModel,
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        listViewModel = listViewModel
-                    )
+                        MenuEstado(
+                            game = game,
+                            roomViewModel = roomViewModel,
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            listViewModel = listViewModel
+                        )
+                    }
 
                     IconButton(
                         onClick = {

@@ -30,14 +30,20 @@ class RoomViewModel : ViewModel() {
     private val _juegosFavoritos = MutableLiveData<Set<String>>(setOf())
     val juegosFavoritos: LiveData<Set<String>> = _juegosFavoritos
 
-    fun getFavorios() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = roomRepository.getFavorites()
-            withContext(Dispatchers.Main) {
-                _listaFavoritos.value = response
+    fun getFavoritos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = roomRepository.getFavorites()
+                withContext(Dispatchers.Main) {
+                    _listaFavoritos.value = response
+                    _juegosFavoritos.value = response.map { it.name }.toSet()
+                }
+            } catch (e: Exception) {
+                Log.e("RoomViewModel", "Error al obtener favoritos", e)
             }
         }
     }
+
     fun esFavorito(game: Game): LiveData<Boolean> {
         val resultado = MutableLiveData<Boolean>()
         viewModelScope.launch(Dispatchers.IO) {
@@ -76,6 +82,7 @@ class RoomViewModel : ViewModel() {
                     roomRepository.updateFav(game, nuevoEstado)
                 }
                 actualizarJuegosGuardados()
+                getFavoritos()
             } catch (e: Exception) {
                 Log.e("Database", "Error al actualizar favorito: ${e.message}")
             }

@@ -70,7 +70,7 @@ fun InfoCompact(navController: NavHostController, apiViewModel: ApiViewModel, ro
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
+                        .aspectRatio(16f / 9f)
                 )
 
                 Column(
