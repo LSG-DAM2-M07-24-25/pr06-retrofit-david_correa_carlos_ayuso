@@ -66,19 +66,19 @@ fun MenuEstado(
         HorizontalDivider()
 
         DropdownMenuItem(
-            text = { Text("Añadir a Pendientes") },
+            text = { Text("Cambiar a Pendiente") },
             leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
             onClick = { realizarAccion("Estado cambiado a Pendiente") { roomViewModel.updateEstado(game, Estado.PENDIENTE) } }
         )
 
         DropdownMenuItem(
-            text = { Text("Añadir a Jugando") },
+            text = { Text("Cambiar a Jugando") },
             leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
             onClick = { realizarAccion("Estado cambiado a Jugando") { roomViewModel.updateEstado(game, Estado.JUGANDO) } }
         )
 
         DropdownMenuItem(
-            text = { Text("Añadir a Jugados") },
+            text = { Text("Cambiar a Jugado") },
             leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
             onClick = { realizarAccion("Estado cambiado a Jugado") { roomViewModel.updateEstado(game, Estado.JUGADO) } }
         )
