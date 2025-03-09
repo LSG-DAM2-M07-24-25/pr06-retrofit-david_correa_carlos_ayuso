@@ -40,7 +40,7 @@ fun CrearListaCompact(navController: NavHostController, listViewModel: ListViewM
             TopAppBar(
                 title = { Text("Crear Lista") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Routes.ListasCompact.route) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Volver"
