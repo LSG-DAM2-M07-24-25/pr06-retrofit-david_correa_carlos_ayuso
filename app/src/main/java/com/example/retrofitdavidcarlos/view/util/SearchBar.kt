@@ -15,19 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.retrofitdavidcarlos.view.compact.MySearchBarView
+//import com.example.retrofitdavidcarlos.view.compact.MySearchBarView
 import com.example.retrofitdavidcarlos.viewmodel.SearchBarViewModel
 
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(myViewModel: SearchBarViewModel){
-    val searchHistory by myViewModel.searchHistory.observeAsState(emptyList())
+    //val searchHistory by myViewModel.searchHistory.observeAsState(emptyList())
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        MySearchBarView(myViewModel)
+        //MySearchBarView(myViewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -36,7 +36,7 @@ fun SearchBar(myViewModel: SearchBarViewModel){
                 .fillMaxWidth()
                 .weight(1.0f)
         ) {
-            items(searchHistory) { search ->
+            /*items(searchHistory) { search ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -50,7 +50,7 @@ fun SearchBar(myViewModel: SearchBarViewModel){
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-            }
+            }*/
         }
     }
 }

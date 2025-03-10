@@ -3,27 +3,36 @@ package com.example.retrofitdavidcarlos.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.retrofitdavidcarlos.model.Game
+import com.example.retrofitdavidcarlos.model.GameResponse
 
 class SearchBarViewModel : ViewModel() {
-    private val _searchedText = MutableLiveData("")
-    val searchedText: LiveData<String> = _searchedText
-    private val _searchHistory = MutableLiveData<List<String>>(emptyList())
-    val searchHistory: LiveData<List<String>> = _searchHistory
+    private val _busqueda = MutableLiveData<String>("")
+    val busqueda: LiveData<String> = _busqueda
 
-    fun onSearchTextChange(text: String) {
-        _searchedText.value = text
-    }
+    private val _isSearchActive = MutableLiveData<Boolean>(false)
+    val isSearchActive: LiveData<Boolean> = _isSearchActive
 
-    fun addToHistory(text: String) {
-        if (text.isNotBlank()) {
-            val currentHistory = _searchHistory.value.orEmpty()
-            _searchHistory.value = listOf(text) + currentHistory
-            _searchedText.value = ""
+    private val _filteredGames = MutableLiveData<List<Game>>(emptyList())
+    val filteredGames: LiveData<List<Game>> = _filteredGames
+
+    fun actualizarBusqueda(query: String, games: GameResponse) {
+        _busqueda.value = query
+        _isSearchActive.value = query.isNotBlank()
+
+        _filteredGames.value = if (query.isBlank()) {
+            emptyList()
+        } else {
+            games.results.filter {
+                it.name.contains(query, ignoreCase = true)
+            }
         }
     }
 
-    fun clearHistory() {
-        _searchHistory.value = emptyList()
+    // Función para limpiar la barra
+    fun limpiarBusqueda() {
+        _busqueda.value = ""
+        _isSearchActive.value = false
+        _filteredGames.value = emptyList()
     }
-
 }
