@@ -1,8 +1,6 @@
 package com.example.retrofitdavidcarlos.view.compact
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -15,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
@@ -23,12 +22,9 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -48,8 +44,8 @@ import com.example.retrofitdavidcarlos.viewmodel.ApiViewModel
 import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 import com.example.retrofitdavidcarlos.viewmodel.SearchBarViewModel
-import okhttp3.internal.wait
 
+// Estructura general del home con topbar y bottombar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel, listViewModel: ListViewModel, searchBarViewModel: SearchBarViewModel) {
@@ -96,59 +92,134 @@ fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, ro
     }
 }
 
+// Muestra todos los juegos hasta que se escribe algo en al barra de busqueda
 @Composable
 fun ContenidoPrincipal(paddingValues: PaddingValues, myViewModel: SearchBarViewModel, listViewModel: ListViewModel, apiViewModel: ApiViewModel, roomViewModel: RoomViewModel, games: GameResponse, navController: NavHostController){
 
+    val busqueda by myViewModel.busqueda.observeAsState("")
+    val isSearchActive by myViewModel.isSearchActive.observeAsState(false)
+    val filteredGames by myViewModel.filteredGames.observeAsState(emptyList())
+
     Column (
-    modifier = Modifier
-        .fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        MySearchBarView(
-            myViewModel = myViewModel,
+        SearchBar(
+            query = busqueda,
+            onQueryChange = {
+                myViewModel.actualizarBusqueda(it, games)
+            },
+            onClearQuery = {
+                myViewModel.limpiarBusqueda()
+            }
         )
 
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(games.results) { game ->
-                GameItem(navController, game, listViewModel, roomViewModel)
+        if (isSearchActive){
+            ResultadosBusqueda(
+                query = busqueda,
+                filteredGames = filteredGames,
+                navController = navController,
+                listViewModel = listViewModel,
+                roomViewModel = roomViewModel
+            )
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(games.results) { game ->
+                    GameItem(navController, game, listViewModel, roomViewModel)
+                }
             }
         }
     }
 }
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+// Se muestran los juegos que contengan la palabra de la query
+// Muestra un mensaje si no encuentra algun juego que contenga la palabra de la query
 @Composable
-fun MySearchBarView(myViewModel: SearchBarViewModel){
-    val searchedText by myViewModel.searchedText.observeAsState("")
-    val searchHistory by myViewModel.searchHistory.observeAsState(emptyList())
-
-    SearchBar(
-        query = searchedText,
-        onQueryChange = { myViewModel.onSearchTextChange(it) },
-        onSearch = { myViewModel.addToHistory(it) },
-        active = false,
-        onActiveChange = { },
-        leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = "Search") },
-        trailingIcon = {
-            if (searchHistory.isNotEmpty()) {
-                Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription = "Clear",
-                    tint = Color.Red,
-                    modifier = Modifier.clickable { myViewModel.clearHistory() }
+fun ResultadosBusqueda(
+    query: String,
+    filteredGames: List<Game>,
+    navController: NavHostController,
+    listViewModel: ListViewModel,
+    roomViewModel: RoomViewModel
+){
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        if (filteredGames.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No se encontraron resultados que coincidan con \"$query\"",
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        },
-        placeholder = { Text("Busca tus juegos favoritos") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-    ){}
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(filteredGames) { game ->
+                    GameItem(navController, game, listViewModel, roomViewModel)
+                }
+            }
+        }
+    }
 }
 
+// El diseño de la barra de busqueda
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClearQuery: () -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Busqueda"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("Busca tus juegos")
+            }
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+        ),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        singleLine = true,
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClearQuery) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Limpiar búsqueda"
+                    )
+                }
+            }
+        }
+    )
+}
+
+// Navegacion por tabs entre Home y Listas
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -196,6 +267,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
+// Composable Card para cada juego
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GameItem(navController: NavHostController, game: Game, listViewModel: ListViewModel, roomViewModel: RoomViewModel) {
