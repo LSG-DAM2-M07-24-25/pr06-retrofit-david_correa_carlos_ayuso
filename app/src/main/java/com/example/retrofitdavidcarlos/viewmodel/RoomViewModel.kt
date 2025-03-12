@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Database
 import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
@@ -40,11 +39,16 @@ class RoomViewModel : ViewModel() {
     private val _listaJugados = MutableLiveData<List<Game>>()
     val listaJugados: LiveData<List<Game>> = _listaJugados
 
-    fun getFavorios() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = roomRepository.getFavorites()
-            withContext(Dispatchers.Main) {
-                _listaFavoritos.value = response
+    fun getFavoritos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val favoritos = roomRepository.getFavorites()
+                withContext(Dispatchers.Main) {
+                    _listaFavoritos.value = favoritos
+                    _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+                }
+            } catch (e: Exception) {
+                Log.e("RoomViewModel", "Error al obtener favoritos", e)
             }
         }
     }
@@ -85,7 +89,16 @@ class RoomViewModel : ViewModel() {
                 } else {
                     roomRepository.updateFav(game, nuevoEstado)
                 }
-                actualizarJuegosGuardados()
+                // Primero actualizamos los juegos guardados
+                val juegos = roomRepository.getAllGames()
+                val favoritos = roomRepository.getFavorites()
+                
+                withContext(Dispatchers.Main) {
+                    // Actualizamos ambas listas en el hilo principal
+                    _juegosGuardados.value = juegos.map { it.name }.toSet()
+                    _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+                    _listaFavoritos.value = favoritos // Actualizamos la lista de favoritos directamente
+                }
             } catch (e: Exception) {
                 Log.e("Database", "Error al actualizar favorito: ${e.message}")
             }
@@ -152,10 +165,11 @@ class RoomViewModel : ViewModel() {
     }
 
     // Inicializar las listas al crear el ViewModel
-    /*
+    
     init {
         actualizarListasEstado()
+        getFavoritos()
     }
-     */
+     
 
 }
