@@ -106,13 +106,11 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun Favoritos(games: GameResponse, paddingValues: PaddingValues,  navController: NavHostController, roomViewModel: RoomViewModel){
-    // Observar el LiveData de favoritos
-    val favoritos by roomViewModel.listaFavoritos.observeAsState(initial = emptyList())
+fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: NavHostController, roomViewModel: RoomViewModel) {
+    val favoritos by roomViewModel.listaFavoritos.observeAsState(emptyList())
 
-    // Llamar a la función para cargar los favoritos (solo una vez)
-    LaunchedEffect(key1 = true) {
-        roomViewModel.getFavorios()
+    LaunchedEffect(Unit) {
+        roomViewModel.getFavoritos()
     }
 
     Column(
@@ -126,7 +124,8 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues,  navController:
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(favoritos) { game ->
-                TarjetaGame(game = game,
+                TarjetaGame(
+                    game = game,
                     navController = navController,
                     roomViewModel = roomViewModel
                 )
@@ -138,7 +137,11 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues,  navController:
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: RoomViewModel){
+    val esFavorito by roomViewModel.juegosFavoritos.observeAsState(setOf())
 
+    LaunchedEffect(game.is_favorite) {
+        roomViewModel.actualizarJuegosGuardados()
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -190,13 +193,14 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
                         )
 
                         IconButton(
-                            onClick = { roomViewModel.addFavorito(game) },
-                            modifier = Modifier.size(28.dp)
+                            onClick = { 
+                                roomViewModel.addFavorito(game)
+                            }
                         ) {
                             Icon(
-                                imageVector = if (game.is_favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                imageVector = if (esFavorito.contains(game.name)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = "Favorito",
-                                tint = if (game.is_favorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = if (esFavorito.contains(game.name)) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
