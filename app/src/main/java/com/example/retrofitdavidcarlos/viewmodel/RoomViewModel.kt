@@ -30,6 +30,16 @@ class RoomViewModel : ViewModel() {
     private val _juegosFavoritos = MutableLiveData<Set<String>>(setOf())
     val juegosFavoritos: LiveData<Set<String>> = _juegosFavoritos
 
+    // LiveData para cada estado
+    private val _listaPendientes = MutableLiveData<List<Game>>()
+    val listaPendientes: LiveData<List<Game>> = _listaPendientes
+
+    private val _listaJugando = MutableLiveData<List<Game>>()
+    val listaJugando: LiveData<List<Game>> = _listaJugando
+
+    private val _listaJugados = MutableLiveData<List<Game>>()
+    val listaJugados: LiveData<List<Game>> = _listaJugados
+
     fun getFavorios() {
         CoroutineScope(Dispatchers.IO).launch {
             val response = roomRepository.getFavorites()
@@ -90,6 +100,7 @@ class RoomViewModel : ViewModel() {
                     game.state = Estado.PENDIENTE
                     roomRepository.addJuego(game)
                     actualizarJuegosGuardados()
+                    actualizarListasEstado()
                 }
             } catch (e: Exception) {
                 Log.e("Database", "Error al guardar el juego: ${e.message}")
@@ -101,23 +112,50 @@ class RoomViewModel : ViewModel() {
     fun updateEstado(game: Game, estado: Estado) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-            roomRepository.updateState(game, estado)
-
-            }catch (e: Exception){
+                roomRepository.updateState(game, estado)
+                actualizarListasEstado()
+            } catch (e: Exception) {
                 Log.e("Database", "Error al cambiar el Estado del juego: ${e.message}")
             }
         }
     }
 
-    fun eliminarJuego(game: Game){
+    fun eliminarJuego(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 roomRepository.removeGame(game)
                 actualizarJuegosGuardados()
-            }catch (e: Exception){
+                actualizarListasEstado()
+            } catch (e: Exception) {
                 Log.e("Database", "Error al eliminar el juego: ${e.message}")
             }
         }
     }
+
+    // Función para actualizar todas las listas
+    fun actualizarListasEstado() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val pendientes = roomRepository.getPendientes()
+                val jugando = roomRepository.getJugando()
+                val jugados = roomRepository.getJugados()
+
+                withContext(Dispatchers.Main) {
+                    _listaPendientes.value = pendientes
+                    _listaJugando.value = jugando
+                    _listaJugados.value = jugados
+                }
+            } catch (e: Exception) {
+                Log.e("RoomViewModel", "Error al actualizar listas de estado", e)
+            }
+        }
+    }
+
+    // Inicializar las listas al crear el ViewModel
+    /*
+    init {
+        actualizarListasEstado()
+    }
+     */
 
 }
