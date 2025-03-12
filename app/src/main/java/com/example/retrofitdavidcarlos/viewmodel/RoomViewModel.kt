@@ -46,12 +46,14 @@ class RoomViewModel : ViewModel() {
                 withContext(Dispatchers.Main) {
                     _listaFavoritos.value = favoritos
                     _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+
                 }
             } catch (e: Exception) {
                 Log.e("RoomViewModel", "Error al obtener favoritos", e)
             }
         }
     }
+
     fun esFavorito(game: Game): LiveData<Boolean> {
         val resultado = MutableLiveData<Boolean>()
         viewModelScope.launch(Dispatchers.IO) {
@@ -99,6 +101,7 @@ class RoomViewModel : ViewModel() {
                     _juegosFavoritos.value = favoritos.map { it.name }.toSet()
                     _listaFavoritos.value = favoritos // Actualizamos la lista de favoritos directamente
                 }
+
             } catch (e: Exception) {
                 Log.e("Database", "Error al actualizar favorito: ${e.message}")
             }

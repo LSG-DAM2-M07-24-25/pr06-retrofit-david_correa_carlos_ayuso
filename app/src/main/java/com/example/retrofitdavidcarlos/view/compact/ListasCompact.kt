@@ -168,6 +168,7 @@ fun ListaEstadoContainer(
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
+
     }
 }
 
@@ -199,6 +200,7 @@ fun ContenidoListaEstado(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(games) { game ->
+
                 TarjetaGame(
                     game = game,
                     navController = navController,
@@ -269,6 +271,7 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
 
                         IconButton(
                             onClick = {
+
                                 roomViewModel.addFavorito(game)
                             }
                         ) {

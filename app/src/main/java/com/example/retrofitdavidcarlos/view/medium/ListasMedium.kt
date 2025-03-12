@@ -106,6 +106,7 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: 
 
     // Llamar a la función para cargar los favoritos (solo una vez)
     LaunchedEffect(key1 = true) {
+
         roomViewModel.getFavoritos()
     }
 
