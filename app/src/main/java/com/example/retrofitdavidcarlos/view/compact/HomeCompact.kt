@@ -1,5 +1,6 @@
 package com.example.retrofitdavidcarlos.view.compact
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,6 +37,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.example.retrofitdavidcarlos.R
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
 import com.example.retrofitdavidcarlos.nav.Routes
@@ -59,7 +62,19 @@ fun HomeCompact(navController: NavHostController, apiViewModel: ApiViewModel, ro
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Biblioteca Gamer", fontWeight = FontWeight.Bold, color = Color.White) },
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.t1),
+                            contentDescription = "Logo t1",
+                            modifier = Modifier.size(60.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("BiblioGamer", fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
