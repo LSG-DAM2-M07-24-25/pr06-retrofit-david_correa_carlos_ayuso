@@ -22,13 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.retrofitdavidcarlos.model.Game
@@ -110,7 +106,7 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: 
 
     // Llamar a la función para cargar los favoritos (solo una vez)
     LaunchedEffect(key1 = true) {
-        roomViewModel.getFavorios()
+        roomViewModel.getFavoritos()
     }
 
     Column(
