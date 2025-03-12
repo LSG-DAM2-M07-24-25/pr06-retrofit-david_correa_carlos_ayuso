@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Database
 import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 import com.example.retrofitdavidcarlos.model.GameResponse
@@ -30,13 +29,24 @@ class RoomViewModel : ViewModel() {
     private val _juegosFavoritos = MutableLiveData<Set<String>>(setOf())
     val juegosFavoritos: LiveData<Set<String>> = _juegosFavoritos
 
+    // LiveData para cada estado
+    private val _listaPendientes = MutableLiveData<List<Game>>()
+    val listaPendientes: LiveData<List<Game>> = _listaPendientes
+
+    private val _listaJugando = MutableLiveData<List<Game>>()
+    val listaJugando: LiveData<List<Game>> = _listaJugando
+
+    private val _listaJugados = MutableLiveData<List<Game>>()
+    val listaJugados: LiveData<List<Game>> = _listaJugados
+
     fun getFavoritos() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = roomRepository.getFavorites()
+                val favoritos = roomRepository.getFavorites()
                 withContext(Dispatchers.Main) {
-                    _listaFavoritos.value = response
-                    _juegosFavoritos.value = response.map { it.name }.toSet()
+                    _listaFavoritos.value = favoritos
+                    _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+
                 }
             } catch (e: Exception) {
                 Log.e("RoomViewModel", "Error al obtener favoritos", e)
@@ -81,8 +91,17 @@ class RoomViewModel : ViewModel() {
                 } else {
                     roomRepository.updateFav(game, nuevoEstado)
                 }
-                actualizarJuegosGuardados()
-                getFavoritos()
+                // Primero actualizamos los juegos guardados
+                val juegos = roomRepository.getAllGames()
+                val favoritos = roomRepository.getFavorites()
+                
+                withContext(Dispatchers.Main) {
+                    // Actualizamos ambas listas en el hilo principal
+                    _juegosGuardados.value = juegos.map { it.name }.toSet()
+                    _juegosFavoritos.value = favoritos.map { it.name }.toSet()
+                    _listaFavoritos.value = favoritos // Actualizamos la lista de favoritos directamente
+                }
+
             } catch (e: Exception) {
                 Log.e("Database", "Error al actualizar favorito: ${e.message}")
             }
@@ -97,6 +116,7 @@ class RoomViewModel : ViewModel() {
                     game.state = Estado.PENDIENTE
                     roomRepository.addJuego(game)
                     actualizarJuegosGuardados()
+                    actualizarListasEstado()
                 }
             } catch (e: Exception) {
                 Log.e("Database", "Error al guardar el juego: ${e.message}")
@@ -108,23 +128,51 @@ class RoomViewModel : ViewModel() {
     fun updateEstado(game: Game, estado: Estado) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-            roomRepository.updateState(game, estado)
-
-            }catch (e: Exception){
+                roomRepository.updateState(game, estado)
+                actualizarListasEstado()
+            } catch (e: Exception) {
                 Log.e("Database", "Error al cambiar el Estado del juego: ${e.message}")
             }
         }
     }
 
-    fun eliminarJuego(game: Game){
+    fun eliminarJuego(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 roomRepository.removeGame(game)
                 actualizarJuegosGuardados()
-            }catch (e: Exception){
+                actualizarListasEstado()
+            } catch (e: Exception) {
                 Log.e("Database", "Error al eliminar el juego: ${e.message}")
             }
         }
     }
+
+    // Función para actualizar todas las listas
+    fun actualizarListasEstado() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val pendientes = roomRepository.getPendientes()
+                val jugando = roomRepository.getJugando()
+                val jugados = roomRepository.getJugados()
+
+                withContext(Dispatchers.Main) {
+                    _listaPendientes.value = pendientes
+                    _listaJugando.value = jugando
+                    _listaJugados.value = jugados
+                }
+            } catch (e: Exception) {
+                Log.e("RoomViewModel", "Error al actualizar listas de estado", e)
+            }
+        }
+    }
+
+    // Inicializar las listas al crear el ViewModel
+    
+    init {
+        actualizarListasEstado()
+        getFavoritos()
+    }
+     
 
 }
