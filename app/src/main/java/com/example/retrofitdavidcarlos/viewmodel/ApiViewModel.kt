@@ -57,7 +57,7 @@ class ApiViewModel : ViewModel() {
                 game.is_favorite = !game.is_favorite
 
                 if (!roomRepository.findByName(game)) {
-                    game.state = Estado.PENDIENTE
+                    game.state = Estado.SIN_ESTADO
                     roomRepository.addJuego(game)
                 } else {
                     roomRepository.updateFav(game, game.is_favorite)
@@ -87,7 +87,7 @@ class ApiViewModel : ViewModel() {
             try {
                 if (!roomRepository.findByName(game)) {
                     game.is_favorite = false
-                    game.state = Estado.PENDIENTE
+                    game.state = Estado.SIN_ESTADO
                     roomRepository.addJuego(game)
                 }
             } catch (e: Exception) {

@@ -214,8 +214,7 @@ fun GameItem(navController: NavHostController, game: Game, listViewModel: ListVi
                             roomViewModel = roomViewModel,
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
-                            listViewModel = listViewModel
-                        )
+                            )
                     }
 
                     IconButton(

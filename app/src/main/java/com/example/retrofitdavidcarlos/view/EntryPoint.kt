@@ -68,9 +68,39 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         }
 
         composable(Routes.ListasCompact.route){
-            ListasCompact(navigationController, apiViewModel, listViewModel, roomViewModel)
+            ListasCompact(navigationController, apiViewModel, roomViewModel)
         }
 
+        // Nuevas rutas para las listas de estado
+        composable("listaJugando") {
+            ContenidoListaEstado(
+                games = roomViewModel.listaJugando.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Jugando"
+            )
+        }
+        
+        composable("listaJugados") {
+            ContenidoListaEstado(
+                games = roomViewModel.listaJugados.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Jugados"
+            )
+        }
+        
+        composable("listaPendientes") {
+            ContenidoListaEstado(
+                games = roomViewModel.listaPendientes.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Pendientes"
+            )
+        }
+
+        // Ya no necesitamos estas rutas
+        /*
         composable(
             Routes.ContenidoListasCompact.route,
             arguments = listOf(
@@ -88,6 +118,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         composable(Routes.CrearListaCompact.route){
             CrearListaCompact(navigationController, listViewModel)
         }
+        */
     }
 }
 
