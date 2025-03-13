@@ -3,5 +3,6 @@ package com.example.retrofitdavidcarlos.model
 enum class Estado {
     JUGADO,
     JUGANDO,
-    PENDIENTE
+    PENDIENTE,
+    SIN_ESTADO
 }

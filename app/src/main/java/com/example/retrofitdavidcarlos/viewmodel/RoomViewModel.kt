@@ -88,7 +88,7 @@ class RoomViewModel : ViewModel() {
                 val nuevoEstado = !game.is_favorite
                 game.is_favorite = nuevoEstado
                 if (!roomRepository.findByName(game)) {
-                    game.state = Estado.PENDIENTE
+                    game.state = Estado.SIN_ESTADO
                     roomRepository.addJuego(game)
                 } else {
                     roomRepository.updateFav(game, nuevoEstado)
@@ -96,7 +96,7 @@ class RoomViewModel : ViewModel() {
                 // Primero actualizamos los juegos guardados
                 val juegos = roomRepository.getAllGames()
                 val favoritos = roomRepository.getFavorites()
-                
+
                 withContext(Dispatchers.Main) {
                     // Actualizamos ambas listas en el hilo principal
                     _juegosGuardados.value = juegos.map { it.name }.toSet()
@@ -115,7 +115,7 @@ class RoomViewModel : ViewModel() {
             try {
                 if (!roomRepository.findByName(game)) {
                     game.is_favorite = false
-                    game.state = Estado.PENDIENTE
+                    game.state = Estado.SIN_ESTADO
                     roomRepository.addJuego(game)
                     actualizarJuegosGuardados()
                     actualizarListasEstado()
