@@ -113,35 +113,23 @@ fun ListasMedium(
 @Composable
 fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit) {
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Mis listas",
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
-
-        TabRow(
-            selectedTabIndex = tabSeleccionado,
-            containerColor = MaterialTheme.colorScheme.background
-        ) {
-            Tab(
-                selected = tabSeleccionado == 0,
-                onClick = { onTabSelected(0) },
-                text = { Text("FAVORITOS") }
-            )
-            Tab(
-                selected = tabSeleccionado == 1,
-                onClick = { onTabSelected(1) },
-                text = { Text("LISTAS") }
-            )
-        }
+    TabRow(
+        selectedTabIndex = tabSeleccionado,
+        containerColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp)
+    ) {
+        Tab(
+            selected = tabSeleccionado == 0,
+            onClick = { onTabSelected(0) },
+            text = { Text("FAVORITOS") }
+        )
+        Tab(
+            selected = tabSeleccionado == 1,
+            onClick = { onTabSelected(1) },
+            text = { Text("LISTAS") }
+        )
     }
 }
 
