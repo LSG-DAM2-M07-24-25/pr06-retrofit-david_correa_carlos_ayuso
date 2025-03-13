@@ -130,7 +130,14 @@ class RoomViewModel : ViewModel() {
     fun updateEstado(game: Game, estado: Estado) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                roomRepository.updateState(game, estado)
+                if (!roomRepository.findByName(game)){
+                    // Asegurarnos de que el juego tenga un estado antes de guardarlo
+                    game.state = estado
+                    roomRepository.addJuego(game)
+                    actualizarJuegosGuardados()
+                } else {
+                    roomRepository.updateState(game, estado)
+                }
                 actualizarListasEstado()
             } catch (e: Exception) {
                 Log.e("Database", "Error al cambiar el Estado del juego: ${e.message}")

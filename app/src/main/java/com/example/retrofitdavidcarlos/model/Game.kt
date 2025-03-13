@@ -2,6 +2,7 @@ package com.example.retrofitdavidcarlos.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
 
 @Entity(tableName = "games")
 data class Game(
@@ -25,6 +26,7 @@ data class Game(
     val tba: Boolean,
     val updated: String,
     val user_game: String?,
-    var is_favorite: Boolean,
-    var state: Estado = Estado.SIN_ESTADO
+    @ColumnInfo(name = "is_favorite")
+    var is_favorite: Boolean = false,
+    var state: Estado = Estado.PENDIENTE
 )
