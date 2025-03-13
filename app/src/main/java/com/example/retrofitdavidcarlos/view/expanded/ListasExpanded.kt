@@ -109,35 +109,23 @@ fun ListasExpanded(
 @Composable
 fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit) {
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Mis listas",
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
-
-        TabRow(
-            selectedTabIndex = tabSeleccionado,
-            containerColor = MaterialTheme.colorScheme.background
-        ) {
-            Tab(
-                selected = tabSeleccionado == 0,
-                onClick = { onTabSelected(0) },
-                text = { Text("FAVORITOS") }
-            )
-            Tab(
-                selected = tabSeleccionado == 1,
-                onClick = { onTabSelected(1) },
-                text = { Text("LISTAS") }
-            )
-        }
+    TabRow(
+        selectedTabIndex = tabSeleccionado,
+        containerColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(40.dp)
+    ) {
+        Tab(
+            selected = tabSeleccionado == 0,
+            onClick = { onTabSelected(0) },
+            text = { Text("FAVORITOS") }
+        )
+        Tab(
+            selected = tabSeleccionado == 1,
+            onClick = { onTabSelected(1) },
+            text = { Text("LISTAS") }
+        )
     }
 }
 
@@ -150,7 +138,7 @@ fun ListaEstadoContainer(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)  // Aumentando la altura del contenedor
+            .height(100.dp)
             .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RectangleShape
@@ -158,21 +146,21 @@ fun ListaEstadoContainer(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)  // Aumentando el padding interno
-                .fillMaxHeight(),  // Ocupando toda la altura disponible
-            verticalArrangement = Arrangement.Center  // Centrando el contenido verticalmente
+                .padding(24.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = nombre,
-                style = MaterialTheme.typography.titleMedium,  // Texto del título más grande
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = "$cantidad ${if (cantidad == 1) "Juego" else "Juegos"}",
-                style = MaterialTheme.typography.bodyMedium,  // Texto del cuerpo más grande
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp)  // Mayor espacio entre textos
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
     }
