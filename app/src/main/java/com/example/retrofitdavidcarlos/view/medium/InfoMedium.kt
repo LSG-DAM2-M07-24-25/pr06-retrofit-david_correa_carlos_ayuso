@@ -54,8 +54,8 @@ fun InfoMedium(navController: NavHostController, apiViewModel: ApiViewModel, roo
             TopAppBar(
                 title = { Text(text = game?.name ?: "Detalles del juego") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Routes.HomeMedium.route) }) {
-                        Icon(Icons.Default.ArrowBack, "Volver")
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, "Volver atrás")
                     }
                 },
                 actions = {
@@ -87,7 +87,6 @@ fun InfoMedium(navController: NavHostController, apiViewModel: ApiViewModel, roo
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 )
-
 
                 Column(
                     modifier = Modifier

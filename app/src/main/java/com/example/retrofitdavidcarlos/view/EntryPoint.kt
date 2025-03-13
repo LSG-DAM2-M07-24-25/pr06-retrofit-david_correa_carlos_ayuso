@@ -108,7 +108,7 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
         startDestination = Routes.HomeMedium.route
     ){
         composable(Routes.HomeMedium.route){
-            HomeMedium(navigationController, apiViewModel, roomViewModel, listViewModel)
+            HomeMedium(navigationController, apiViewModel, roomViewModel, listViewModel, searchBarViewModel)
         }
 
         composable(
@@ -117,7 +117,7 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
                 navArgument("id") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            InfoMedium(
+            InfoExpanded(
                 apiViewModel = apiViewModel,
                 navController = navigationController,
                 id = backStackEntry.arguments?.getInt("id") ?: 0,
@@ -126,7 +126,35 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
         }
 
         composable(Routes.ListasMedium.route){
-            ListasMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
+            ListasMedium(navigationController, apiViewModel, roomViewModel)
+        }
+
+        // Nuevas rutas para las listas de estado
+        composable("listaJugando") {
+            ContenidoListaEstadoMedium(
+                games = roomViewModel.listaJugando.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Jugando"
+            )
+        }
+
+        composable("listaJugados") {
+            ContenidoListaEstadoMedium(
+                games = roomViewModel.listaJugados.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Jugados"
+            )
+        }
+
+        composable("listaPendientes") {
+            ContenidoListaEstadoMedium(
+                games = roomViewModel.listaPendientes.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Pendientes"
+            )
         }
     }
 }
