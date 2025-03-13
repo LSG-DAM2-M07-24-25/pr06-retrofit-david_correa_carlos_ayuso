@@ -82,7 +82,7 @@ fun HomeExpanded(navController: NavHostController, apiViewModel: ApiViewModel, r
                             modifier = Modifier.size(60.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("BiblioGamer EXPANDED", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("BiblioGamer", fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

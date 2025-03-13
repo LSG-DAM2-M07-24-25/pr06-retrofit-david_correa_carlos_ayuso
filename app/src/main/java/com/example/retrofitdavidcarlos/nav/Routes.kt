@@ -15,10 +15,6 @@ sealed class Routes(val route: String) {
         fun createRoute(id: Int) = "info_medium/$id"
     }
     object ListasMedium : Routes("listas_medium")
-    object ContenidoListasMedium : Routes("contenido_listas_medium/{id}"){
-        fun createRoute(id: Int) = "contenido_listas_medium/$id"
-    }
-    object CrearListaMedium : Routes("crear_lista_medium")
 
 
     // Vistas Expanded
