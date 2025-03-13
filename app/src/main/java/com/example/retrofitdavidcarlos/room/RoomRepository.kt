@@ -5,7 +5,6 @@ import com.example.retrofitdavidcarlos.model.Estado
 import com.example.retrofitdavidcarlos.model.Game
 
 class RoomRepository {
-
     private val gameDaoInterface = GameApplication.database.GameDao()
     private val historialDaoInterface = GameApplication.database.HistorialDao()
 
@@ -20,9 +19,12 @@ class RoomRepository {
     suspend fun removeGame(game: Game) = gameDaoInterface.removeGame(game)
     suspend fun isFavorite(game: Game): Boolean = gameDaoInterface.isFavorite(game.name)
     suspend fun getAllGames(): List<Game> = gameDaoInterface.getAllGames()
-
     suspend fun getAllQueries() = historialDaoInterface.getAllQueries()
+
     suspend fun borrarHistorial() = historialDaoInterface.borrarHistorial()
     suspend fun addQuery(busqueda: Busqueda) = historialDaoInterface.addQuery(busqueda)
     suspend fun estaGuardado(busqueda: String): Boolean = historialDaoInterface.findByQuery(busqueda).isNotEmpty()
+
+    suspend fun eliminarBusqueda(query: String) = historialDaoInterface.deleteQuery(query)
+    suspend fun actualizarTimestamp(query: String, timestamp: Long) = historialDaoInterface.updateTimestamp(query, timestamp)
 }
