@@ -33,3 +33,35 @@ Aplicación Android para gestionar y mostrar información sobre juegos, utilizan
 - **Estados del Juego**: Los juegos tienen estados (Pendiente, Jugando, Jugado) que se actualizan en la base de datos. 💾
 - **Interacción con la API RAWG**: Obtención y visualización de juegos con sus detalles. 🌍
 - **Actualización en Tiempo Real**: Cambios en favoritos, estados y búsquedas se reflejan inmediatamente en la UI. ⚡
+
+
+# **Screenshots**
+
+## Home
+<img src="Home1.png" alt="Home" width="300">  
+*Se muestra la lista de juegos.*
+
+## Búsqueda
+<img src="Busqueda.png" alt="búsqueda" width="300">  
+*Barra de búsqueda, con historial almacenado localmente*
+
+## Dropdown
+<img src="Home2.png" alt="Home2" width="300">  
+*Permite cambiar el estado del juego.*
+
+## Detalles
+<img src="Detalles.png" alt="Detalles del juego" width="300">  
+*Vista detallada del juego.*
+
+## Lista de favoritos
+<img src="ListaFav.png" alt="Favoritos" width="300">  
+*Se muestran los juegos marcados como favoritos.*
+
+## Listas
+<img src="Listas.png" alt="Listas" width="300">  
+*Se listan los juegos según su estado: Jugado, Jugando, Pendiente.*
+
+## Lista de Jugados
+<img src="ListaJugados.png" alt="Jugados" width="300">  
+*Lista de juegos jugados.*
+
