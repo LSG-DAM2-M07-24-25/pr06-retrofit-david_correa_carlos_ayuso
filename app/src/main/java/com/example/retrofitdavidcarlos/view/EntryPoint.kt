@@ -73,7 +73,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
 
         // Nuevas rutas para las listas de estado
         composable("listaJugando") {
-            ContenidoListaEstado(
+            ContenidoListaEstadoCompact(
                 games = roomViewModel.listaJugando.value ?: emptyList(),
                 navController = navigationController,
                 roomViewModel = roomViewModel,
@@ -82,7 +82,7 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         }
         
         composable("listaJugados") {
-            ContenidoListaEstado(
+            ContenidoListaEstadoCompact(
                 games = roomViewModel.listaJugados.value ?: emptyList(),
                 navController = navigationController,
                 roomViewModel = roomViewModel,
@@ -91,34 +91,13 @@ fun AppNavigationCompact(navigationController: NavHostController, apiViewModel: 
         }
         
         composable("listaPendientes") {
-            ContenidoListaEstado(
+            ContenidoListaEstadoCompact(
                 games = roomViewModel.listaPendientes.value ?: emptyList(),
                 navController = navigationController,
                 roomViewModel = roomViewModel,
                 titulo = "Pendientes"
             )
         }
-
-        // Ya no necesitamos estas rutas
-        /*
-        composable(
-            Routes.ContenidoListasCompact.route,
-            arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            ContenidoListasCompact(
-                apiViewModel = apiViewModel,
-                navController = navigationController,
-                listViewModel = listViewModel,
-                id = backStackEntry.arguments?.getInt("id") ?: 0
-            )
-        }
-
-        composable(Routes.CrearListaCompact.route){
-            CrearListaCompact(navigationController, listViewModel)
-        }
-        */
     }
 }
 
@@ -149,23 +128,6 @@ fun AppNavigationMedium(navigationController: NavHostController, apiViewModel: A
         composable(Routes.ListasMedium.route){
             ListasMedium(navigationController, apiViewModel, listViewModel, roomViewModel)
         }
-
-        composable(
-            Routes.ContenidoListasMedium.route,
-            arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            ContenidoListasMedium(
-                apiViewModel = apiViewModel,
-                navController = navigationController,
-                listViewModel = listViewModel,
-                id = backStackEntry.arguments?.getInt("id") ?: 0
-            )
-        }
-        composable(Routes.CrearListaMedium.route){
-            CrearListaMedium(navigationController, listViewModel)
-        }
     }
 }
 
@@ -176,7 +138,7 @@ fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel:
         startDestination = Routes.HomeExpanded.route
     ){
         composable(Routes.HomeExpanded.route){
-            HomeExpanded(navigationController, apiViewModel, roomViewModel, listViewModel)
+            HomeExpanded(navigationController, apiViewModel, roomViewModel, listViewModel, searchBarViewModel)
         }
 
         composable(
@@ -194,24 +156,35 @@ fun AppNavigationExpanded(navigationController: NavHostController, apiViewModel:
         }
 
         composable(Routes.ListasExpanded.route){
-            ListasExpanded(navigationController, apiViewModel, listViewModel, roomViewModel)
+            ListasExpanded(navigationController, apiViewModel, roomViewModel)
         }
 
-        composable(
-            Routes.ContenidoListasExpanded.route,
-            arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            ContenidoListasExpanded(
-                apiViewModel = apiViewModel,
+        // Nuevas rutas para las listas de estado
+        composable("listaJugando") {
+            ContenidoListaEstadoExpanded(
+                games = roomViewModel.listaJugando.value ?: emptyList(),
                 navController = navigationController,
-                listViewModel = listViewModel,
-                id = backStackEntry.arguments?.getInt("id") ?: 0
+                roomViewModel = roomViewModel,
+                titulo = "Jugando"
             )
         }
-        composable(Routes.CrearListaExpanded.route){
-            CrearListaExpanded(navigationController, listViewModel)
+
+        composable("listaJugados") {
+            ContenidoListaEstadoExpanded(
+                games = roomViewModel.listaJugados.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Jugados"
+            )
+        }
+
+        composable("listaPendientes") {
+            ContenidoListaEstadoExpanded(
+                games = roomViewModel.listaPendientes.value ?: emptyList(),
+                navController = navigationController,
+                roomViewModel = roomViewModel,
+                titulo = "Pendientes"
+            )
         }
     }
 }

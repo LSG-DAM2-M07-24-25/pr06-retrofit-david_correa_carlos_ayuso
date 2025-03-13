@@ -40,7 +40,7 @@ fun InfoExpanded(navController: NavHostController, apiViewModel: ApiViewModel, r
             TopAppBar(
                 title = { Text(text = game?.name ?: "Detalles del juego") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Routes.HomeExpanded.route) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "Volver atrás")
                     }
                 },
@@ -73,7 +73,6 @@ fun InfoExpanded(navController: NavHostController, apiViewModel: ApiViewModel, r
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 )
-
 
                 Column(
                     modifier = Modifier

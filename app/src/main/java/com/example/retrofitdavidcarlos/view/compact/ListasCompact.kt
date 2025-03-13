@@ -178,7 +178,7 @@ fun ListaEstadoContainer(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoListaEstado(
+fun ContenidoListaEstadoCompact(
     games: List<Game>,
     navController: NavHostController,
     roomViewModel: RoomViewModel,
