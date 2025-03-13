@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,13 +38,20 @@ import com.example.retrofitdavidcarlos.viewmodel.ListViewModel
 import com.example.retrofitdavidcarlos.viewmodel.RoomViewModel
 
 @Composable
-fun ListasExpanded(navController: NavHostController, apiViewModel: ApiViewModel, listViewModel: ListViewModel, roomViewModel: RoomViewModel){
-    val games: GameResponse by roomViewModel.games.observeAsState(GameResponse(emptyList()))
+fun ListasExpanded(
+    navController: NavHostController,
+    apiViewModel: ApiViewModel,
+    roomViewModel: RoomViewModel
+) {
+    val pendientes by roomViewModel.listaPendientes.observeAsState(emptyList())
+    val jugando by roomViewModel.listaJugando.observeAsState(emptyList())
+    val jugados by roomViewModel.listaJugados.observeAsState(emptyList())
     var tabSeleccionado by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
-        apiViewModel.getGames()
+        roomViewModel.actualizarListasEstado()
     }
+
     Scaffold(
         topBar = {
             Topbar(tabSeleccionado) {
@@ -51,26 +60,55 @@ fun ListasExpanded(navController: NavHostController, apiViewModel: ApiViewModel,
         },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
-        if (tabSeleccionado == 0){
+        if (tabSeleccionado == 0) {
             Favoritos(
-                games = games,
-                paddingValues = padding,
-                navController = navController,
-                roomViewModel = roomViewModel
-
+                padding,
+                navController,
+                roomViewModel
             )
         } else {
-            Listas(
-                paddingValues = padding,
-                navController = navController,
-                viewModel = listViewModel
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        ListaEstadoContainer(
+                            nombre = "Jugando",
+                            cantidad = jugando.size,
+                            onClick = { navController.navigate("listaJugando") }
+                        )
+                    }
+                    item {
+                        ListaEstadoContainer(
+                            nombre = "Jugados",
+                            cantidad = jugados.size,
+                            onClick = { navController.navigate("listaJugados") }
+                        )
+                    }
+                    item {
+                        ListaEstadoContainer(
+                            nombre = "Pendientes",
+                            cantidad = pendientes.size,
+                            onClick = { navController.navigate("listaPendientes") }
+                        )
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
+fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit) {
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -104,27 +142,71 @@ fun Topbar(tabSeleccionado: Int, onTabSelected: (Int) -> Unit){
 }
 
 @Composable
-fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: NavHostController, roomViewModel: RoomViewModel){
-    // Observar el LiveData de favoritos
-    val favoritos by roomViewModel.listaFavoritos.observeAsState(initial = emptyList())
-
-    // Llamar a la función para cargar los favoritos (solo una vez)
-    LaunchedEffect(key1 = true) {
-
-        roomViewModel.getFavoritos()
-    }
-
-    Column(
+fun ListaEstadoContainer(
+    nombre: String,
+    cantidad: Int,
+    onClick: () -> Unit
+) {
+    Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
+            .fillMaxWidth()
+            .height(100.dp)  // Aumentando la altura del contenedor
+            .clickable(onClick = onClick),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RectangleShape
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)  // Aumentando el padding interno
+                .fillMaxHeight(),  // Ocupando toda la altura disponible
+            verticalArrangement = Arrangement.Center  // Centrando el contenido verticalmente
+        ) {
+            Text(
+                text = nombre,
+                style = MaterialTheme.typography.titleMedium,  // Texto del título más grande
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                text = "$cantidad ${if (cantidad == 1) "Juego" else "Juegos"}",
+                style = MaterialTheme.typography.bodyMedium,  // Texto del cuerpo más grande
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp)  // Mayor espacio entre textos
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContenidoListaEstadoExpanded(
+    games: List<Game>,
+    navController: NavHostController,
+    roomViewModel: RoomViewModel,
+    titulo: String
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(titulo) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, "Volver atrás")
+                    }
+                }
+            )
+        }
+    ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(favoritos) { game ->
+            items(games) { game ->
+
                 TarjetaGame(
                     game = game,
                     navController = navController,
@@ -138,7 +220,11 @@ fun Favoritos(games: GameResponse, paddingValues: PaddingValues, navController: 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: RoomViewModel){
+    val esFavorito by roomViewModel.juegosFavoritos.observeAsState(setOf())
 
+    LaunchedEffect(game.is_favorite) {
+        roomViewModel.actualizarJuegosGuardados()
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -190,13 +276,15 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
                         )
 
                         IconButton(
-                            onClick = { roomViewModel.addFavorito(game) },
-                            modifier = Modifier.size(28.dp)
+                            onClick = {
+
+                                roomViewModel.addFavorito(game)
+                            }
                         ) {
                             Icon(
-                                imageVector = if (game.is_favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                imageVector = if (esFavorito.contains(game.name)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = "Favorito",
-                                tint = if (game.is_favorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = if (esFavorito.contains(game.name)) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -204,15 +292,7 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Fecha: ${game.released ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Rating: ${game.rating}/5",
+                        text = "Fecha: ${game.released ?: "N/A"} | Rating: ${game.rating}/5",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -223,128 +303,34 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
 }
 
 @Composable
-fun Listas(paddingValues: PaddingValues, navController: NavHostController, viewModel: ListViewModel) {
-    var expandedMenu by remember { mutableStateOf<String?>(null) }
-    val listas by viewModel.listas.observeAsState(emptyList())
+fun Favoritos(
+    paddingValues: PaddingValues,
+    navController: NavHostController,
+    roomViewModel: RoomViewModel
+) {
+    val favoritos by roomViewModel.listaFavoritos.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        roomViewModel.getFavoritos()
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "${listas.size}/${viewModel.maxListas} Listas",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Text(
-                text = "CREAR NUEVA LISTA",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate(Routes.CrearListaExpanded.route)
-                    }
-                    .padding(vertical = 8.dp)
-            )
-        }
-
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(
-                items = listas,
-                key = { it.id }
-            ) { lista ->
-                ListasContainer(
-                    lista = lista,
-                    isMenuExpanded = expandedMenu == lista.id,
-                    onMenuClick = {
-                        expandedMenu = if (expandedMenu == lista.id) null else lista.id
-                    },
-                    onListClick = {
-                        //navController.navigate("infoView/${lista.id}")
-                    },
-                    onDelete = {
-                        viewModel.eliminarLista(lista.id)
-                    }
+            items(favoritos) { game ->
+                TarjetaGame(
+                    game = game,
+                    navController = navController,
+                    roomViewModel = roomViewModel
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun ListasContainer(lista: Lista, isMenuExpanded: Boolean, onMenuClick: () -> Unit, onListClick: () -> Unit, onDelete: () -> Unit){
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onListClick),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        //shape = MaterialTheme.shapes.medium
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = lista.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Box {
-                    IconButton(onClick = onMenuClick) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Más opciones",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = isMenuExpanded,
-                        onDismissRequest = onMenuClick
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    "Borrar Lista",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            },
-                            onClick = {
-                                onDelete()
-                                onMenuClick()
-                            }
-                        )
-                    }
-                }
-
-            }
-
-            Text(
-                text = "${lista.itemCount} ${if (lista.itemCount == 1) "Item" else "Elementos"}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
         }
     }
 }

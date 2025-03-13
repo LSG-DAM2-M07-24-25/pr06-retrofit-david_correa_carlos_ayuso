@@ -7,10 +7,6 @@ sealed class Routes(val route: String) {
         fun createRoute(id: Int) = "info_compact/$id"
     }
     object ListasCompact : Routes("listas_compact")
-    object ContenidoListasCompact : Routes("contenido_listas_compact/{id}"){
-        fun createRoute(id: Int) = "contenido_listas_compact/$id"
-    }
-    object CrearListaCompact : Routes("crear_lista_compact")
 
 
     // Vistas Medium
@@ -31,9 +27,5 @@ sealed class Routes(val route: String) {
         fun createRoute(id: Int) = "info_expanded/$id"
     }
     object ListasExpanded : Routes("listas_expanded")
-    object ContenidoListasExpanded : Routes("contenido_listas_expanded/{id}"){
-        fun createRoute(id: Int) = "contenido_listas_expanded/$id"
-    }
-    object CrearListaExpanded : Routes("crear_lista_expanded")
 
 }
