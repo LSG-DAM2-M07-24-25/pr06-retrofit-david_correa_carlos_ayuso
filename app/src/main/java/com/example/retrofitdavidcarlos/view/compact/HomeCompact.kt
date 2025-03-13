@@ -201,7 +201,7 @@ fun ResultadosBusqueda(
     }
 }
 
-// El diseño de la barra de busqueda
+// Barra de busqueda
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
@@ -217,17 +217,18 @@ fun SearchBar(
         searchBarViewModel.actualizarHistorial()
     }
 
+    LaunchedEffect(historial) {
+        if (historial.isEmpty()) {
+            showHistorial = false
+        }
+    }
+
     Column {
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
             placeholder = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Busqueda"
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
                     Text("Busca tus juegos")
                 }
             },
@@ -239,91 +240,129 @@ fun SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp)
-                .onFocusChanged { showHistorial = it.isFocused },
+                .onFocusChanged {
+                    if (it.isFocused && historial.isNotEmpty()) {
+                        showHistorial = true
+                    }
+                },
             singleLine = true,
             trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(onClick = onClearQuery) {
+                Row {
+                    if (query.isNotEmpty()) {
+                        IconButton(onClick = onClearQuery) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Limpiar búsqueda"
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = {
+                            if (query.isNotEmpty()) {
+                                searchBarViewModel.guardarBusqueda(query)
+                                if (historial.isNotEmpty() || !showHistorial) {
+                                    showHistorial = !showHistorial
+                                }
+                            }
+                        },
+                        enabled = query.isNotEmpty()
+                    ) {
                         Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Limpiar búsqueda"
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Ver historial",
+                            tint = if (query.isNotEmpty()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                         )
                     }
                 }
             }
         )
 
-        AnimatedVisibility(
-            visible = showHistorial,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(8.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        // Solo mostrar el historial si hay busquedas recientes
+        if (historial.isNotEmpty()) {
+            AnimatedVisibility(
+                visible = showHistorial,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
-                Column(
+                Card(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
                     ) {
-                        Text(
-                            text = "Historial de búsqueda",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        IconButton(
-                            onClick = { 
-                                searchBarViewModel.borrarHistorial()
-                                showHistorial = false 
-                            }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Borrar historial"
+                            Text(
+                                text = "Historial de búsqueda",
+                                style = MaterialTheme.typography.titleMedium
                             )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(historial) { busqueda ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onQueryChange(busqueda)
-                                        showHistorial = false
-                                    }
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            IconButton(
+                                onClick = {
+                                    searchBarViewModel.borrarHistorial()
+                                }
                             ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Borrar historial"
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(historial) { busqueda ->
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            onQueryChange(busqueda)
+                                            showHistorial = false
+                                        }
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.List,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = busqueda,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.List,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Text(
+                                            text = busqueda,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = {
+                                            searchBarViewModel.eliminarBusqueda(busqueda)
+                                        },
+                                        modifier = Modifier.size(24.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Eliminar búsqueda",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
