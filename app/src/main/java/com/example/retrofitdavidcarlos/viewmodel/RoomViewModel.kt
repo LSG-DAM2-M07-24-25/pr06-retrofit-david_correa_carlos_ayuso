@@ -20,9 +20,11 @@ class RoomViewModel : ViewModel() {
     val roomRepository = _roomRepository
     private val _listaFavoritos = MutableLiveData<List<Game>>()
     val listaFavoritos: LiveData<List<Game>> = _listaFavoritos
-    private val _favoritos = MutableLiveData<Set<Int>>(setOf())
+
+    //TODO: Esto hay que borrarlo, hay que sustituir su uso por _juegos guardados o la lista de la API
     private val _games = MutableLiveData<GameResponse>()
     val games = _games
+
     private val _juegosGuardados = MutableLiveData<Set<String>>(setOf())
     val juegosGuardados: LiveData<Set<String>> = _juegosGuardados
     
