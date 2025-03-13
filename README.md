@@ -1,4 +1,4 @@
-# 🎮 **Game Management App**
+# 🎮 **GameNest**
 
 Aplicación Android para gestionar y mostrar información sobre juegos, utilizando Retrofit para interactuar con una API externa, Room para almacenamiento local y el patrón MVVM para estructurar el código.
 
@@ -22,7 +22,9 @@ Aplicación Android para gestionar y mostrar información sobre juegos, utilizan
 - **Modelos**: Representan juegos, estados, búsquedas y respuestas de la API.
 - **Base de Datos**: Utiliza Room para almacenar datos relacionados con juegos y búsquedas.
 - **API**: GameApiService para interactuar con la API de RAWG.
-- **ViewModel**: Utilizamos ViewModels para gestiona la interacción con la base de datos y la UI.
+- **Views**: Parte visual de la App.
+- **ViewModel**: Se usan los ViewModels para gestionar la interaccion entre los models y las views.
+- **RoomViewModel**: Utilizamos RoomViewModels para gestiona la interacción con la base de datos y la UI.
 
 ## 🕹️ **Funcionalidad**
 
