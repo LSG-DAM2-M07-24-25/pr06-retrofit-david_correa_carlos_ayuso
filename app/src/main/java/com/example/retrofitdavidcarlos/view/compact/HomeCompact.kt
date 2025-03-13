@@ -1,7 +1,13 @@
 package com.example.retrofitdavidcarlos.view.compact
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -15,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
@@ -26,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -114,6 +122,7 @@ fun ContenidoPrincipal(paddingValues: PaddingValues, myViewModel: SearchBarViewM
     val busqueda by myViewModel.busqueda.observeAsState("")
     val isSearchActive by myViewModel.isSearchActive.observeAsState(false)
     val filteredGames by myViewModel.filteredGames.observeAsState(emptyList())
+    val historial by myViewModel.historialBusqueda.observeAsState(emptyList())
 
     Column (
         modifier = Modifier
@@ -126,7 +135,8 @@ fun ContenidoPrincipal(paddingValues: PaddingValues, myViewModel: SearchBarViewM
             },
             onClearQuery = {
                 myViewModel.limpiarBusqueda()
-            }
+            },
+            searchBarViewModel = myViewModel
         )
 
         if (isSearchActive){
@@ -197,41 +207,131 @@ fun ResultadosBusqueda(
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onClearQuery: () -> Unit
+    onClearQuery: () -> Unit,
+    searchBarViewModel: SearchBarViewModel
 ) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Busqueda"
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Busca tus juegos")
-            }
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-        ),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        singleLine = true,
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = onClearQuery) {
+    var showHistorial by remember { mutableStateOf(false) }
+    val historial by searchBarViewModel.historialBusqueda.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        searchBarViewModel.actualizarHistorial()
+    }
+
+    Column {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            placeholder = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Limpiar búsqueda"
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Busqueda"
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Busca tus juegos")
+                }
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline
+            ),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .onFocusChanged { showHistorial = it.isFocused },
+            singleLine = true,
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = onClearQuery) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Limpiar búsqueda"
+                        )
+                    }
+                }
+            }
+        )
+
+        AnimatedVisibility(
+            visible = showHistorial,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Historial de búsqueda",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        IconButton(
+                            onClick = { 
+                                searchBarViewModel.borrarHistorial()
+                                showHistorial = false 
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Borrar historial"
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(historial) { busqueda ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onQueryChange(busqueda)
+                                        showHistorial = false
+                                    }
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.List,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = busqueda,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-    )
+    }
 }
 
 // Navegacion por tabs entre Home y Listas
