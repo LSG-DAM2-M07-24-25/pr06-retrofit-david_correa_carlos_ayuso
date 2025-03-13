@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +73,8 @@ fun ListasCompact(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item {
@@ -146,29 +148,31 @@ fun ListaEstadoContainer(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .height(100.dp)  // Aumentando la altura del contenedor
             .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        shape = RoundedCornerShape(12.dp)
+        shape = RectangleShape
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(24.dp)  // Aumentando el padding interno
+                .fillMaxHeight(),  // Ocupando toda la altura disponible
+            verticalArrangement = Arrangement.Center  // Centrando el contenido verticalmente
         ) {
             Text(
                 text = nombre,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium,  // Texto del título más grande
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = "$cantidad ${if (cantidad == 1) "Juego" else "Juegos"}",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,  // Texto del cuerpo más grande
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 8.dp)  // Mayor espacio entre textos
             )
         }
-
     }
 }
 
@@ -286,15 +290,7 @@ fun TarjetaGame(game: Game, navController: NavHostController, roomViewModel: Roo
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Fecha: ${game.released ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Rating: ${game.rating}/5",
+                        text = "Fecha: ${game.released ?: "N/A"} | Rating: ${game.rating}/5",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
